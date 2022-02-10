@@ -24,13 +24,20 @@ module.exports = ctx => {
 
   print("babel-loader.options: ", `${ctx.framework}`.blue);
 
-  const defaultOption = webpackDefaultOption(yyconfig, ctx);
+  const defaultOption = webpackDefaultOption(userOption, ctx);
   const option = deepmerge(defaultOption, userOption);
 
   if (ctx.logs) {
     print("ctx", ctx);
     print("option", option);
     print("rules", option.module.rules);
+  }
+
+  // 删除自定义属性
+  for (let userKey in option) {
+    if (/^@/.test(userKey)) {
+      delete option[userKey];
+    }
   }
 
   const compiler = webpack(option);
@@ -98,14 +105,13 @@ function errorHandler(err, stats) {
 }
 
 function getWebpackUserOption(yyconfig, ctx) {
-  if (!yyconfig.webpack) {
+  if (!yyconfig) {
     print(`"yy.config.js" Not Found => "yy init" `);
     return {};
   }
 
   // 合并 yy.config.js/webpack 配置
-  const { common, pages } = yyconfig.webpack;
-  const commonOption = common;
+  const { common: commonOption, pages } = yyconfig;
   const pageOption = pages[ctx.build] || {};
 
   const option = deepmerge.all([

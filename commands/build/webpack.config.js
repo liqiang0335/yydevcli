@@ -3,14 +3,16 @@ const fs = require("fs");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const babelOptions = require("./babel.config");
 const print = require("../../utils/print");
-
 /**
  * ----------------------------------------
  * WEBPACK CONFIG
  * ----------------------------------------
  */
-module.exports = function (yyconfig, ctx) {
-  const { hash = true, themeVars = {} } = yyconfig;
+module.exports = function (userOption, ctx) {
+  const hash = userOption["@hash"] || {};
+  const themeVars = userOption["@themeVars"] || {};
+  const HtmlWebpackPluginOption = userOption["@HtmlWebpackPluginOption"] || {};
+
   const { framework = "react", isPro } = ctx;
   const hashHolder = hash ? ".[contenthash:6]" : "";
   const sassRule = createScssRules();
@@ -30,22 +32,22 @@ module.exports = function (yyconfig, ctx) {
     entry: "./main/index.js",
     target: "web",
     output: {
-      filename: `[name]${hashHolder}.min.js`,
+      filename: `${ctx.build}${hashHolder}.min.js`,
       path: ctx.buildFolder + "/dist",
       clean: true,
     },
     plugins: [
       compiler => {
         new MiniCssExtractPlugin({
-          filename: `[name]${hashHolder}.min.css`,
+          filename: `${ctx.build}${hashHolder}.min.css`,
         }).apply(compiler);
       },
       compiler => {
-        const HtmlWebpackPlugin = require("html-webpack-plugin");
-        new HtmlWebpackPlugin({
-          title: "Development",
+        const Option = require("html-webpack-plugin");
+        new Option({
           template: path.join(ctx.buildFolder, "template.html"),
           publicPath: "auto",
+          ...HtmlWebpackPluginOption,
         }).apply(compiler);
       },
       compiler => {
@@ -55,7 +57,7 @@ module.exports = function (yyconfig, ctx) {
     ],
     devServer: {
       static: {
-        directory: ctx.buildFolder,
+        directory: userOption.output?.path || ctx.buildFolder + "/dist",
       },
       allowedHosts: "all",
       host: "127.0.0.1",

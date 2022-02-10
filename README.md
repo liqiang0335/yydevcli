@@ -17,12 +17,17 @@ npm i -D yydevcli # 本地安装
 
 ## `yy.config.js`
 
-- `webpack`: webpack 配置选项
-  - `webpack.common`: 多页面打包的通用配置
-  - `webpack.pages`: 每个页面的具体配置(根据入口文件夹名称)
-- `hash=true`: 文件是否增加哈希值
-- `themeVars={}`: 可配置 antd 主题选项
+### webpack 选项
 
-## other
+- `common`: 多页面打包的通用 webpack 配置
+- `pages`: 每个页面的具体 webpack 配置(根据入口文件夹名称)
+
+### 自定义选项(@开头)
+
+- `@hash=true`: 文件是否增加哈希值
+- `@themeVars={}`: 可配置 antd 主题选项
+- `@HtmlWebpackPluginOption={}`: HTML 模版配置
+
+### 其他
 
 - `style/var.scss`: 配置 scss 全局变量
