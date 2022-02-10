@@ -119,8 +119,12 @@ function getWebpackUserOption(yyconfig, ctx) {
     throw new Error(`请配置 'entry' 参数`);
   }
 
-  if (!fs.existsSync(path.join(buildFolder, "template.html"))) {
-    throw new Error(`未检测到模版文件 template.html`);
+  const templateFilePath = path.join(buildFolder, "template.html");
+  if (!fs.existsSync(templateFilePath)) {
+    const source = fs.readFileSync(
+      path.join(__dirname, "../../assets/template.html")
+    );
+    fs.writeFileSync(templateFilePath, source);
   }
 
   if (option?.resolve?.alias) {
