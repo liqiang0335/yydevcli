@@ -56,6 +56,7 @@
     "postcss-short": "^5.0.0",
     "sass-loader": "^12.4.0",
     "sass-resources-loader": "^2.2.4",
-    "style-loader": "^3.3.1"
+    "style-loader": "^3.3.1",
+    "yydevcli": "latest"
   }
 }

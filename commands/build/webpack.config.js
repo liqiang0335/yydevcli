@@ -12,6 +12,7 @@ module.exports = function (userOption, ctx) {
   const hash = userOption["@hash"] || {};
   const themeVars = userOption["@themeVars"] || {};
   const HtmlWebpackPluginOption = userOption["@HtmlWebpackPluginOption"] || {};
+  const outputPath = userOption.output?.path || ctx.buildFolder + "/dist";
 
   const { framework = "react", isPro } = ctx;
   const hashHolder = hash ? ".[contenthash:6]" : "";
@@ -33,7 +34,7 @@ module.exports = function (userOption, ctx) {
     target: "web",
     output: {
       filename: `${ctx.build}${hashHolder}.min.js`,
-      path: ctx.buildFolder + "/dist",
+      path: outputPath,
       clean: true,
     },
     plugins: [
@@ -57,7 +58,7 @@ module.exports = function (userOption, ctx) {
     ],
     devServer: {
       static: {
-        directory: userOption.output?.path || ctx.buildFolder + "/dist",
+        directory: outputPath,
       },
       allowedHosts: "all",
       host: "127.0.0.1",
