@@ -1,0 +1,7 @@
+node_modules
+.git
+.DS_Store
+.vscode
+test.js
+_build
+commands/build/.temp_cache/
