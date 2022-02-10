@@ -8,7 +8,7 @@
     "yy": "./index.js"
   },
   "bugs": {
-    "url": "https://github.com/liqiang0335/yycli/issues"
+    "url": "https://github.com/liqiang0335/yydevcli/issues"
   },
   "devDependencies": {
     "colors": "^1.4.0",
@@ -26,7 +26,7 @@
   },
   "deprecated": false,
   "description": "cli for self",
-  "homepage": "https://github.com/liqiang0335/yycli#readme",
+  "homepage": "https://github.com/liqiang0335/yydevcli#readme",
   "keywords": [
     "yydevcli"
   ],
@@ -34,7 +34,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/liqiang0335/yycli.git"
+    "url": "git+https://github.com/liqiang0335/yydevcli.git"
   },
   "scripts": {
     "beta": "npm publish --tag=beta"
