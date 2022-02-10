@@ -13,8 +13,9 @@ module.exports = function (yyconfig, ctx) {
   const { hash = true, themeVars = {} } = yyconfig;
   const { framework = "react", isPro } = ctx;
   const hashHolder = hash ? ".[contenthash:6]" : "";
-  const sassRule = getScssRule();
+  const sassRule = createScssRules();
 
+  // 检测SCSS全局变量
   const sassVar = path.join(ctx.buildFolder, "style/var.scss");
   if (fs.existsSync(sassVar)) {
     print("use sass global variable");
@@ -115,7 +116,7 @@ module.exports = function (yyconfig, ctx) {
   };
 };
 
-function getScssRule() {
+function createScssRules() {
   return {
     test: /\.s[ca]ss$/,
     use: [
@@ -138,6 +139,7 @@ function getScssRule() {
   };
 }
 
+// 生产环境启用压缩
 function shouldOpimization(ctx) {
   if (!ctx.isPro) return {};
   return {

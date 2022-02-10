@@ -102,6 +102,8 @@ function getWebpackUserOption(yyconfig, ctx) {
     print(`"yy.config.js" Not Found => "yy init" `);
     return {};
   }
+
+  // 合并 yy.config.js/webpack 配置
   const { common, pages } = yyconfig.webpack;
   const commonOption = common;
   const pageOption = pages[ctx.build] || {};
@@ -119,6 +121,7 @@ function getWebpackUserOption(yyconfig, ctx) {
     throw new Error(`请配置 'entry' 参数`);
   }
 
+  // 创建模版文件
   const templateFilePath = path.join(buildFolder, "template.html");
   if (!fs.existsSync(templateFilePath)) {
     const source = fs.readFileSync(
@@ -127,6 +130,7 @@ function getWebpackUserOption(yyconfig, ctx) {
     fs.writeFileSync(templateFilePath, source);
   }
 
+  // 别名添加绝对路径
   if (option?.resolve?.alias) {
     for (let key in option.resolve.alias) {
       const value = option.resolve.alias[key];
@@ -134,6 +138,7 @@ function getWebpackUserOption(yyconfig, ctx) {
     }
   }
 
+  // 添加 @ 别名
   _.set(option, "resolve.alias.@", buildFolder);
 
   return option;
