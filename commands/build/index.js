@@ -110,7 +110,7 @@ function getWebpackUserOption(yyconfig, ctx) {
     return {};
   }
 
-  // 合并 yy.config.js/webpack 配置
+  // 合并 common-pages 配置
   const { common: commonOption, pages } = yyconfig;
   const pageOption = pages[ctx.build] || {};
 
@@ -134,6 +134,7 @@ function getWebpackUserOption(yyconfig, ctx) {
       path.join(__dirname, "../../assets/template.html")
     );
     fs.writeFileSync(templateFilePath, source);
+    print("添加模版:template.html");
   }
 
   // 别名添加绝对路径
