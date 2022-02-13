@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "yy build=app entry=./app/index env=dev",
-    "hot": "yy build=app entry=./app/index env=hot",
-    "pro": "yy build=app entry=./app/index env=pro"
+    "dev": "yy build=main entry=./main/index env=dev",
+    "hot": "yy build=main entry=./main/index env=hot",
+    "pro": "yy build=main entry=./main/index env=pro"
   },
   "eslintIgnore": [
     "node_modules",
@@ -42,6 +42,7 @@
     "@babel/eslint-parser": "^7.17.0",
     "babel-loader": "^8.2.3",
     "babel-plugin-import": "^1.13.3",
+    "babel-plugin-component": "^1.1.1",
     "babel-plugin-webpack-async-module-name": "^1.1.1",
     "babel-plugin-ynw": "^1.0.0",
     "core-js": "^3.21.0",
