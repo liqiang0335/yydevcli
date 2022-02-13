@@ -1,6 +1,6 @@
 # yydevcli
 
-基于 `Webpack 5` 的自用打包库
+基于 `Webpack 5` 的自用打包库, 支持 `React` 和 `Vue 2`
 
 ## `yy.config.js`
 

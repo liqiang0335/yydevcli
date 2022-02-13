@@ -1,6 +1,6 @@
 {
   "name": "yydevcli",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": {
     "name": "liqiang0335@qq.com"
   },
@@ -20,6 +20,8 @@
     "mini-css-extract-plugin": "^2.5.3",
     "sass": "^1.49.7",
     "terser-webpack-plugin": "^5.3.1",
+    "vue-loader": "15.9.8",
+    "vue-template-compiler": "2.6.14",
     "webpack": "^5.68.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.7.4",

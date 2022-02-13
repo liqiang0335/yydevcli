@@ -16,7 +16,7 @@ module.exports = function (userOption, ctx) {
 
   const { framework = "react", isPro } = ctx;
   const hashHolder = hash ? ".[contenthash:6]" : "";
-  const sassRule = createScssRules();
+  const sassRule = createScssRules(ctx);
 
   // 检测SCSS全局变量
   const sassVar = path.join(ctx.buildFolder, "style/var.scss");
@@ -38,6 +38,10 @@ module.exports = function (userOption, ctx) {
       clean: true,
     },
     plugins: [
+      compiler => {
+        const { VueLoaderPlugin } = require("vue-loader");
+        new VueLoaderPlugin().apply(compiler);
+      },
       compiler => {
         new MiniCssExtractPlugin({
           filename: `${ctx.build}${hashHolder}.min.css`,
@@ -76,6 +80,10 @@ module.exports = function (userOption, ctx) {
     },
     module: {
       rules: [
+        {
+          test: /\.vue$/,
+          loader: "vue-loader",
+        },
         {
           test: /\.(js|jsx)$/,
           use: [{ loader: "babel-loader", options: babelOptions[framework] }],
@@ -119,7 +127,7 @@ module.exports = function (userOption, ctx) {
   };
 };
 
-function createScssRules() {
+function createScssRules(ctx) {
   return {
     test: /\.s[ca]ss$/,
     use: [
@@ -128,9 +136,7 @@ function createScssRules() {
         loader: "css-loader",
         options: {
           importLoaders: 1,
-          modules: {
-            localIdentName: "[name]-[local]-[hash:base64:5]",
-          },
+          modules: false,
         },
       },
       "postcss-loader",

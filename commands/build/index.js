@@ -147,6 +147,7 @@ function getWebpackUserOption(yyconfig, ctx) {
 
   // 添加 @ 别名
   _.set(option, "resolve.alias.@", buildFolder);
+  _.set(option, "resolve.alias.vue$", "vue/dist/vue.esm");
 
   return option;
 }
