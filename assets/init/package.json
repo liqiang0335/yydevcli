@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "yy build=main entry=./main/index env=dev",
-    "hot": "yy build=main entry=./main/index env=hot",
-    "pro": "yy build=main entry=./main/index env=pro"
+    "dev": "yy build=main entry=./main/index env=hot",
+    "build": "yy build=main entry=./main/index env=pro"
   },
   "eslintIgnore": [
     "node_modules",
