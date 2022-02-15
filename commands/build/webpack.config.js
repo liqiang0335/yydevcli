@@ -9,7 +9,7 @@ const print = require("../../utils/print");
  * ----------------------------------------
  */
 module.exports = function (userOption, ctx) {
-  const hash = userOption["@hash"] || {};
+  const hash = userOption["@hash"];
   const themeVars = userOption["@themeVars"] || {};
   const HtmlWebpackPluginOption = userOption["@HtmlWebpackPluginOption"] || {};
   const outputPath = userOption.output?.path || ctx.buildFolder + "/dist";
