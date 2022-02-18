@@ -45,10 +45,11 @@ module.exports = function (userOption, ctx) {
       },
       compiler => {
         const Option = require("html-webpack-plugin");
+        const templatePath = HtmlWebpackPluginOption.template || "template.html";
         new Option({
-          template: path.join(ctx.buildFolder, "template.html"),
           publicPath: "auto",
           ...HtmlWebpackPluginOption,
+          template: path.join(ctx.buildFolder, templatePath),
         }).apply(compiler);
       },
       compiler => {

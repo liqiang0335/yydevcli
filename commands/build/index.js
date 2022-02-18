@@ -114,11 +114,7 @@ function getWebpackUserOption(yyconfig, ctx) {
   const { common: commonOption, pages } = yyconfig;
   const pageOption = pages[ctx.build] || {};
 
-  const option = deepmerge.all([
-    commonOption,
-    pageOption,
-    { entry: ctx.entry },
-  ]);
+  const option = deepmerge.all([commonOption, pageOption, { entry: ctx.entry }]);
 
   const buildFilePath = path.join(ctx.cwd, option.entry);
   const buildFolder = path.dirname(buildFilePath);
@@ -128,13 +124,13 @@ function getWebpackUserOption(yyconfig, ctx) {
   }
 
   // 创建模版文件
-  const templateFilePath = path.join(buildFolder, "template.html");
-  if (!fs.existsSync(templateFilePath)) {
-    const source = fs.readFileSync(
-      path.join(__dirname, "../../assets/template.html")
-    );
-    fs.writeFileSync(templateFilePath, source);
-    print("添加模版:template.html");
+  if (option["@template"] !== false) {
+    const templateFilePath = path.join(buildFolder, "template.html");
+    if (!fs.existsSync(templateFilePath)) {
+      const source = fs.readFileSync(path.join(__dirname, "../../assets/template.html"));
+      fs.writeFileSync(templateFilePath, source);
+      print("添加模版:template.html");
+    }
   }
 
   // 别名添加绝对路径
