@@ -37,26 +37,8 @@ module.exports = function (userOption, ctx) {
       path: outputPath,
       clean: true,
     },
-    plugins: [
-      compiler => {
-        new MiniCssExtractPlugin({
-          filename: `${ctx.build}${hashHolder}.min.css`,
-        }).apply(compiler);
-      },
-      compiler => {
-        const Option = require("html-webpack-plugin");
-        const templatePath = HtmlWebpackPluginOption.template || "template.html";
-        new Option({
-          publicPath: "auto",
-          ...HtmlWebpackPluginOption,
-          template: path.join(ctx.buildFolder, templatePath),
-        }).apply(compiler);
-      },
-      compiler => {
-        const WebpackBar = require("webpackbar");
-        new WebpackBar().apply(compiler);
-      },
-    ],
+    plugins: getPlugins(ctx, userOption, { hashHolder, HtmlWebpackPluginOption }),
+    node: ctx.isNode ? { __dirname: false, __filename: false } : {},
     devServer: {
       static: {
         directory: outputPath,
@@ -98,12 +80,7 @@ module.exports = function (userOption, ctx) {
             "css-loader",
             {
               loader: "less-loader",
-              options: {
-                lessOptions: {
-                  javascriptEnabled: true,
-                  modifyVars: themeVars,
-                },
-              },
+              options: { lessOptions: { javascriptEnabled: true, modifyVars: themeVars } },
             },
           ],
         },
@@ -143,12 +120,12 @@ function createScssRules() {
   };
 }
 
-// 生产环境启用压缩
+// 提取CSS+去掉注释+分包
 function shouldOpimization(ctx) {
-  if (!ctx.isPro) return {};
-  return {
-    runtimeChunk: "single",
-    splitChunks: { chunks: "all" },
+  if (!ctx.isPro) {
+    return {};
+  }
+  const op = {
     minimize: true,
     minimizer: [
       compiler => {
@@ -158,10 +135,44 @@ function shouldOpimization(ctx) {
           extractComments: false,
         }).apply(compiler);
       },
-      compiler => {
-        const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-        new CssMinimizerPlugin().apply(compiler);
-      },
     ],
   };
+  if (!ctx.isNode) {
+    (op.runtimeChunk = "single"),
+      (op.splitChunks = { chunks: "all" }),
+      op.minimizer.push(compiler => {
+        const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+        new CssMinimizerPlugin().apply(compiler);
+      });
+  }
+
+  return op;
+}
+
+function getPlugins(ctx, userOption, { hashHolder, HtmlWebpackPluginOption }) {
+  const plugins = [];
+
+  plugins.push(compiler => {
+    const WebpackBar = require("webpackbar");
+    new WebpackBar().apply(compiler);
+  });
+
+  if (!ctx.isNode) {
+    plugins.push(compiler => {
+      new MiniCssExtractPlugin({
+        filename: `${ctx.build}${hashHolder}.min.css`,
+      }).apply(compiler);
+    });
+    plugins.push(compiler => {
+      const Option = require("html-webpack-plugin");
+      const templatePath = HtmlWebpackPluginOption.template || "template.html";
+      new Option({
+        publicPath: "auto",
+        ...HtmlWebpackPluginOption,
+        template: path.join(ctx.buildFolder, templatePath),
+      }).apply(compiler);
+    });
+  }
+
+  return plugins;
 }

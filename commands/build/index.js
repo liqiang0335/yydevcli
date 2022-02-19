@@ -6,7 +6,8 @@ const print = require("../../utils/print");
 const WebpackDevServer = require("webpack-dev-server");
 const webpack = require("webpack");
 const webpackDefaultOption = require("./webpack.config");
-const _ = require("lodash");
+const { merge } = require("webpack-merge");
+const set = require("lodash/set");
 
 module.exports = ctx => {
   print(`yy-cli version: ${package.version}`);
@@ -21,11 +22,12 @@ module.exports = ctx => {
   ctx.isHot = env === "hot";
   ctx.isDev = env === "dev";
   ctx.isPro = env === "pro";
+  ctx.isNode = userOption.target == "node" || userOption.target == "electron-main";
 
   print("babel-loader.options: ", `${ctx.framework}`.blue);
 
   const defaultOption = webpackDefaultOption(userOption, ctx);
-  const option = deepmerge(defaultOption, userOption);
+  const option = merge(defaultOption, userOption);
 
   if (ctx.logs) {
     print("ctx", ctx);
@@ -142,7 +144,7 @@ function getWebpackUserOption(yyconfig, ctx) {
   }
 
   // 添加 @ 别名
-  _.set(option, "resolve.alias.@", buildFolder);
+  set(option, "resolve.alias.@", buildFolder);
 
   return option;
 }
