@@ -13,6 +13,7 @@ specifiers:
   webpack-cli: ^4.9.2
   webpack-dev-server: ^4.7.4
   webpack-merge: ^5.8.0
+  webpack-node-externals: ^3.0.0
   webpackbar: ^5.0.2
 
 dependencies:
@@ -28,6 +29,7 @@ dependencies:
   webpack-cli: 4.9.2_19108610e47e80b101fe97b50133aa84
   webpack-dev-server: 4.7.4_webpack-cli@4.9.2+webpack@5.68.0
   webpack-merge: 5.8.0
+  webpack-node-externals: 3.0.0
   webpackbar: 5.0.2_webpack@5.68.0
 
 packages:
@@ -3033,6 +3035,11 @@ packages:
     dependencies:
       clone-deep: 4.0.1
       wildcard: 2.0.0
+    dev: false
+
+  /webpack-node-externals/3.0.0:
+    resolution: {integrity: sha512-LnL6Z3GGDPht/AigwRh2dvL9PQPFQ8skEpVrWZXLWBYmqcaojHNN0onvHzie6rq7EWKrrBfPYqNEzTJgiwEQDQ==}
+    engines: {node: '>=6'}
     dev: false
 
   /webpack-sources/3.2.3:

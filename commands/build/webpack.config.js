@@ -3,6 +3,8 @@ const fs = require("fs");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const babelOptions = require("./babel.config");
 const print = require("../../utils/print");
+const nodeExternals = require("webpack-node-externals");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 /**
  * ----------------------------------------
  * WEBPACK CONFIG
@@ -37,8 +39,9 @@ module.exports = function (userOption, ctx) {
       path: outputPath,
       clean: true,
     },
-    plugins: getPlugins(ctx, userOption, { hashHolder, HtmlWebpackPluginOption }),
+    plugins: getPlugins(ctx, { hashHolder, HtmlWebpackPluginOption }),
     node: ctx.isNode ? { __dirname: false, __filename: false } : {},
+    externals: ctx.isNode ? [nodeExternals()] : [], // node环境排除所有node_modules依赖
     devServer: {
       static: {
         directory: outputPath,
@@ -138,18 +141,16 @@ function shouldOpimization(ctx) {
     ],
   };
   if (!ctx.isNode) {
-    (op.runtimeChunk = "single"),
-      (op.splitChunks = { chunks: "all" }),
-      op.minimizer.push(compiler => {
-        const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-        new CssMinimizerPlugin().apply(compiler);
-      });
+    op.runtimeChunk = "single";
+    op.splitChunks = { chunks: "all" };
+    op.minimizer.push(compiler => {
+      new CssMinimizerPlugin().apply(compiler);
+    });
   }
-
   return op;
 }
 
-function getPlugins(ctx, userOption, { hashHolder, HtmlWebpackPluginOption }) {
+function getPlugins(ctx, { hashHolder, HtmlWebpackPluginOption }) {
   const plugins = [];
 
   plugins.push(compiler => {
