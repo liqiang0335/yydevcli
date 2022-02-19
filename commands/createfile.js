@@ -28,7 +28,7 @@ function create(json) {
       const fileName = `${key}.${value}`;
       const file = path.join(_current, fileName);
       if (!fs.existsSync(file)) {
-        fs.writeFileSync(file, "#", "utf8");
+        fs.writeFileSync(file, `# ${fileName}`, "utf8");
       }
     } else {
       const folder = path.join(_current, key);
