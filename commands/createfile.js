@@ -27,8 +27,9 @@ function create(json) {
     if (isFile) {
       const fileName = `${key}.${value}`;
       const file = path.join(_current, fileName);
+      const basename = path.basename(fileName, ".md");
       if (!fs.existsSync(file)) {
-        fs.writeFileSync(file, `# ${fileName}`, "utf8");
+        fs.writeFileSync(file, `# ${basename}`, "utf8");
       }
     } else {
       const folder = path.join(_current, key);
