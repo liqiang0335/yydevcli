@@ -125,9 +125,7 @@ function createScssRules() {
 
 // 提取CSS+去掉注释+分包
 function shouldOpimization(ctx) {
-  if (!ctx.isPro) {
-    return {};
-  }
+  if (!ctx.isPro) return {};
   const op = {
     minimize: true,
     minimizer: [
@@ -141,8 +139,8 @@ function shouldOpimization(ctx) {
     ],
   };
   if (!ctx.isNode) {
-    op.runtimeChunk = "single";
-    op.splitChunks = { chunks: "all" };
+    // op.runtimeChunk = "single";
+    // op.splitChunks = { chunks: "all" };
     op.minimizer.push(compiler => {
       new CssMinimizerPlugin().apply(compiler);
     });
