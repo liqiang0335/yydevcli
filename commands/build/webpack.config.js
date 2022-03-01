@@ -19,6 +19,7 @@ module.exports = function (userOption, ctx) {
   const { framework = "react", isPro } = ctx;
   const hashHolder = hash ? ".[contenthash:6]" : "";
   const sassRule = createScssRules();
+  const _filename = userOption.output.filename || `${ctx.build}${hashHolder}.min`;
 
   // 检测SCSS全局变量
   const sassVar = path.join(ctx.buildFolder, "style/var.scss");
@@ -35,7 +36,7 @@ module.exports = function (userOption, ctx) {
     entry: "./main/index.js",
     target: "web",
     output: {
-      filename: `${ctx.build}${hashHolder}.min.js`,
+      filename: `${_filename}.js`,
       path: outputPath,
       clean: true,
     },
@@ -83,7 +84,9 @@ module.exports = function (userOption, ctx) {
             "css-loader",
             {
               loader: "less-loader",
-              options: { lessOptions: { javascriptEnabled: true, modifyVars: themeVars } },
+              options: {
+                lessOptions: { javascriptEnabled: true, modifyVars: themeVars },
+              },
             },
           ],
         },
@@ -159,7 +162,7 @@ function getPlugins(ctx, { hashHolder, HtmlWebpackPluginOption }) {
   if (!ctx.isNode) {
     plugins.push(compiler => {
       new MiniCssExtractPlugin({
-        filename: `${ctx.build}${hashHolder}.min.css`,
+        filename: `${_filename}.css`,
       }).apply(compiler);
     });
     plugins.push(compiler => {

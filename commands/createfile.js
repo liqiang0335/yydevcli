@@ -1,8 +1,9 @@
-module.exports = ctx => main(ctx);
 const path = require("path");
 const fs = require("fs");
 const cwd = process.cwd();
 let _current = cwd;
+
+module.exports = ctx => main(ctx);
 
 /**
  * create file base on json file
