@@ -19,7 +19,6 @@ module.exports = function (userOption, ctx) {
   const { framework = "react", isPro } = ctx;
   const hashHolder = hash ? ".[contenthash:6]" : "";
   const sassRule = createScssRules();
-  const _filename = userOption.output.filename || `${ctx.build}${hashHolder}.min`;
 
   // 检测SCSS全局变量
   const sassVar = path.join(ctx.buildFolder, "style/var.scss");
@@ -36,11 +35,11 @@ module.exports = function (userOption, ctx) {
     entry: "./main/index.js",
     target: "web",
     output: {
-      filename: `${_filename}.js`,
+      filename: `${ctx.build}${hashHolder}.min.js`,
       path: outputPath,
       clean: true,
     },
-    plugins: getPlugins(ctx, { hashHolder, _filename, HtmlWebpackPluginOption }),
+    plugins: getPlugins(ctx, { hashHolder, HtmlWebpackPluginOption }),
     node: ctx.isNode ? { __dirname: false, __filename: false } : {},
     externals: ctx.isNode ? [nodeExternals()] : [], // node环境排除所有node_modules依赖
     devServer: {
@@ -151,7 +150,7 @@ function shouldOpimization(ctx) {
   return op;
 }
 
-function getPlugins(ctx, { _filename, HtmlWebpackPluginOption }) {
+function getPlugins(ctx, { HtmlWebpackPluginOption, hashHolder }) {
   const plugins = [];
 
   plugins.push(compiler => {
@@ -161,8 +160,9 @@ function getPlugins(ctx, { _filename, HtmlWebpackPluginOption }) {
 
   if (!ctx.isNode) {
     plugins.push(compiler => {
+      const suffix = hashHolder ? "min" : "bundle";
       new MiniCssExtractPlugin({
-        filename: `${_filename}.css`,
+        filename: `${ctx.build}${hashHolder}.${suffix}.css`,
       }).apply(compiler);
     });
     plugins.push(compiler => {
