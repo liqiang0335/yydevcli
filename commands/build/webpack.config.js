@@ -11,6 +11,7 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
  * ----------------------------------------
  */
 module.exports = function (userOption, ctx) {
+  const browsers = userOption["@browsers"] || ["chrome >= 60"];
   const hash = userOption["@hash"];
   const themeVars = userOption["@themeVars"] || {};
   const HtmlWebpackPluginOption = userOption["@HtmlWebpackPluginOption"] || {};
@@ -19,6 +20,7 @@ module.exports = function (userOption, ctx) {
   const { framework = "react", isPro } = ctx;
   const hashHolder = hash ? ".[contenthash:6]" : "";
   const sassRule = createScssRules();
+  const babelOps = babelOptions({ browsers })[framework];
 
   // 检测SCSS全局变量
   const sassVar = path.join(ctx.buildFolder, "style/var.scss");
@@ -64,12 +66,12 @@ module.exports = function (userOption, ctx) {
       rules: [
         {
           test: /\.(js|jsx)$/,
-          use: [{ loader: "babel-loader", options: babelOptions[framework] }],
+          use: [{ loader: "babel-loader", options: babelOps }],
           exclude: /node_modules/,
         },
         {
           test: /ynw.+js$/,
-          use: [{ loader: "babel-loader", options: babelOptions[framework] }],
+          use: [{ loader: "babel-loader", options: babelOps }],
         },
         {
           test: /\.css$/,
