@@ -15,6 +15,7 @@
 - `@themeVars: Object`: 可配置 antd 主题选项
 - `@HtmlWebpackPluginOption: Object`: HTML 模版配置
 - `@browsers": ["chrome >= 60"]` babelOption
+- `@cssModules": true`
 
 ### 其他
 

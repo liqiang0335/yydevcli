@@ -13,13 +13,14 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 module.exports = function (userOption, ctx) {
   const browsers = userOption["@browsers"] || ["chrome >= 60"];
   const hash = userOption["@hash"];
+  const cssModules = userOption["@cssModules"];
   const themeVars = userOption["@themeVars"] || {};
   const HtmlWebpackPluginOption = userOption["@HtmlWebpackPluginOption"] || {};
   const outputPath = userOption.output?.path || ctx.buildFolder + "/dist";
 
   const { framework = "react", isPro } = ctx;
   const hashHolder = hash ? ".[contenthash:6]" : "";
-  const sassRule = createScssRules();
+  const sassRule = createScssRules({ cssModules });
   const babelOps = babelOptions({ browsers })[framework];
 
   // 检测SCSS全局变量
@@ -104,19 +105,24 @@ module.exports = function (userOption, ctx) {
   };
 };
 
-function createScssRules() {
+/**
+ * ----------------------------------------
+ * SCSS配置
+ * ----------------------------------------
+ */
+function createScssRules({ cssModules }) {
+  if (cssModules === false) {
+    print("cssModules disabled");
+  }
+  const modules = cssModules === false ? cssModules : { localIdentName: "[name]-[local]-[hash:base64:5]" };
+
   return {
     test: /\.s[ca]ss$/,
     use: [
       MiniCssExtractPlugin.loader,
       {
         loader: "css-loader",
-        options: {
-          importLoaders: 1,
-          modules: {
-            localIdentName: "[name]-[local]-[hash:base64:5]",
-          },
-        },
+        options: { importLoaders: 2, modules },
       },
       "postcss-loader",
       {
@@ -127,7 +133,11 @@ function createScssRules() {
   };
 }
 
-// 提取CSS+去掉注释+分包
+/**
+ * ----------------------------------------
+ * 提取CSS+去掉注释+分包
+ * ----------------------------------------
+ */
 function shouldOpimization(ctx) {
   if (!ctx.isPro) return {};
   const op = {
@@ -152,6 +162,11 @@ function shouldOpimization(ctx) {
   return op;
 }
 
+/**
+ * ----------------------------------------
+ * 插件配置
+ * ----------------------------------------
+ */
 function getPlugins(ctx, { HtmlWebpackPluginOption, hashHolder }) {
   const plugins = [];
 
