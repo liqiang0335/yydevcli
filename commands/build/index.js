@@ -8,8 +8,9 @@ const webpack = require("webpack");
 const webpackDefaultOption = require("./webpack.config");
 const { merge } = require("webpack-merge");
 const set = require("lodash/set");
+const axios = require("axios");
 
-module.exports = ctx => {
+module.exports = async ctx => {
   print(`yy-cli version: ${package.version}`);
   const { cwd, loadFile, env = "hot" } = ctx;
   const yyconfig = loadFile("yy.config.js") || {};
@@ -29,13 +30,16 @@ module.exports = ctx => {
   const defaultOption = webpackDefaultOption(userOption, ctx);
   const option = merge(defaultOption, userOption);
 
+  const { host, port } = option.devServer;
+  option.devServer.port = getValidPort({ host, port });
+
   if (ctx.logs) {
     print("ctx", ctx);
     print("option", option);
     print("rules", option.module.rules);
   }
 
-  // 删除自定义属性
+  // remove custom property
   for (let userKey in option) {
     if (/^@/.test(userKey)) {
       delete option[userKey];
@@ -43,7 +47,6 @@ module.exports = ctx => {
   }
 
   const compiler = webpack(option);
-
   const envHandler = {
     dev() {
       compiler.watch({ aggregateTimeout: 300, poll: undefined }, errorHandler);
@@ -67,7 +70,6 @@ module.exports = ctx => {
  * helpers
  * ----------------------------------------
  */
-
 function checkframework(buildFilePath) {
   const filePath = buildFilePath + ".js";
   let content;
@@ -112,12 +114,10 @@ function getWebpackUserOption(yyconfig, ctx) {
     return {};
   }
 
-  // 合并 common-pages 配置
+  // merge common-pages setup
   const { common: commonOption, pages } = yyconfig;
   const pageOption = pages[ctx.build] || {};
-
   const option = deepmerge.all([commonOption, pageOption, { entry: ctx.entry }]);
-
   const buildFilePath = path.join(ctx.cwd, option.entry);
   const buildFolder = path.dirname(buildFilePath);
 
@@ -125,7 +125,7 @@ function getWebpackUserOption(yyconfig, ctx) {
     throw new Error(`请配置 'entry' 参数`);
   }
 
-  // 创建模版文件
+  // create template.html
   if (option["@template"] !== false) {
     const templateFilePath = path.join(buildFolder, "template.html");
     if (!fs.existsSync(templateFilePath)) {
@@ -135,7 +135,7 @@ function getWebpackUserOption(yyconfig, ctx) {
     }
   }
 
-  // 别名添加绝对路径
+  // relatiev path to aboslute path
   if (option?.resolve?.alias) {
     for (let key in option.resolve.alias) {
       const value = option.resolve.alias[key];
@@ -143,8 +143,19 @@ function getWebpackUserOption(yyconfig, ctx) {
     }
   }
 
-  // 添加 @ 别名
+  // add alias for @
   set(option, "resolve.alias.@", buildFolder);
 
   return option;
+}
+async function getValidPort({ host, port }) {
+  const url = `http://${host}:${port}`;
+  try {
+    await axios.get(url);
+    return getValidPort({ host, port: port + 1 });
+  } catch (err) {
+    if (err.code === "ECONNREFUSED") {
+      return port;
+    }
+  }
 }

@@ -20,3 +20,4 @@
 ### 其他
 
 - `style/var.scss`: 配置 scss 全局变量
+- logs 打印输出
