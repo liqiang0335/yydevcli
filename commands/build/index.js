@@ -31,7 +31,7 @@ module.exports = async ctx => {
   const option = merge(defaultOption, userOption);
 
   const { host, port } = option.devServer;
-  option.devServer.port = getValidPort({ host, port });
+  option.devServer.port = await getValidPort({ host, port });
 
   if (ctx.logs) {
     print("ctx", ctx);
@@ -148,6 +148,7 @@ function getWebpackUserOption(yyconfig, ctx) {
 
   return option;
 }
+
 async function getValidPort({ host, port }) {
   const url = `http://${host}:${port}`;
   try {
