@@ -7,6 +7,7 @@ module.exports = function openBrowser(url) {
       win32: `start chrome ${url}`,
     };
     const platform = process.platform;
+    console.log("🍎 platform", platform);
     const cmd = handler[platform];
 
     exec(cmd, err => {

@@ -16,6 +16,7 @@
 - `@HtmlWebpackPluginOption: Object`: HTML 模版配置
 - `@browsers": ["chrome >= 60"]` babelOption
 - `@cssModules": true`
+- `@cssInline": false` 使用 style-loader 加载
 
 ### 其他
 

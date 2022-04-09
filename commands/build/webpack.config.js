@@ -12,6 +12,7 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
  */
 module.exports = function (userOption, ctx) {
   const browsers = userOption["@browsers"] || ["chrome >= 60"];
+  const cssInline = userOption["@cssInline"];
   const hash = userOption["@hash"];
   const cssModules = userOption["@cssModules"];
   const themeVars = userOption["@themeVars"] || {};
@@ -20,7 +21,8 @@ module.exports = function (userOption, ctx) {
 
   const { framework = "react", isPro } = ctx;
   const hashHolder = hash ? ".[contenthash:6]" : "";
-  const sassRule = createScssRules({ cssModules });
+  const cssloader = cssInline ? "style-loader" : MiniCssExtractPlugin.loader;
+  const sassRule = createScssRules({ cssModules, cssloader });
   const babelOps = babelOptions({ browsers })[framework];
 
   // 检测SCSS全局变量
@@ -76,13 +78,13 @@ module.exports = function (userOption, ctx) {
         },
         {
           test: /\.css$/,
-          use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
+          use: [cssloader, "css-loader", "postcss-loader"],
         },
         sassRule,
         {
           test: /\.less$/i,
           use: [
-            MiniCssExtractPlugin.loader,
+            cssloader,
             "css-loader",
             {
               loader: "less-loader",
@@ -110,7 +112,7 @@ module.exports = function (userOption, ctx) {
  * SCSS配置
  * ----------------------------------------
  */
-function createScssRules({ cssModules }) {
+function createScssRules({ cssModules, cssloader }) {
   if (cssModules === false) {
     print("cssModules disabled");
   }
@@ -119,7 +121,7 @@ function createScssRules({ cssModules }) {
   return {
     test: /\.s[ca]ss$/,
     use: [
-      MiniCssExtractPlugin.loader,
+      cssloader,
       {
         loader: "css-loader",
         options: { importLoaders: 2, modules },

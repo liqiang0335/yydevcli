@@ -39,13 +39,11 @@ function getInputCommand() {
   if (input) {
     return input.match(/\w+/)[0];
   }
-  return "version";
+  return "defaults";
 }
 
 function getCommands(folder) {
-  return folder
-    .filter(it => !it.startsWith("."))
-    .map(it => it.replace(/\.[a-z]+$/, ""));
+  return folder.filter(it => !it.startsWith(".")).map(it => it.replace(/\.[a-z]+$/, ""));
 }
 
 function getParams(arr) {
