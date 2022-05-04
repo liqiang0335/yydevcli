@@ -20,7 +20,7 @@ module.exports = function (userOption, ctx) {
   const outputPath = userOption.output?.path || ctx.buildFolder + "/dist";
 
   const { framework = "react", isPro } = ctx;
-  const hashHolder = hash ? ".[contenthash:6]" : "";
+  const hashHolder = hash ? ".[contenthash:6]" : ".bundle";
   const cssloader = cssInline ? "style-loader" : MiniCssExtractPlugin.loader;
   const sassRule = createScssRules({ cssModules, cssloader });
   const babelOps = babelOptions({ browsers })[framework];
@@ -40,7 +40,7 @@ module.exports = function (userOption, ctx) {
     entry: "./main/index.js",
     target: "web",
     output: {
-      filename: `${ctx.build}${hashHolder}.min.js`,
+      filename: `${ctx.build}${hashHolder}.js`,
       path: outputPath,
       clean: true,
     },
@@ -179,11 +179,11 @@ function getPlugins(ctx, { HtmlWebpackPluginOption, hashHolder }) {
 
   if (!ctx.isNode) {
     plugins.push(compiler => {
-      const suffix = hashHolder ? "min" : "bundle";
       new MiniCssExtractPlugin({
-        filename: `${ctx.build}${hashHolder}.${suffix}.css`,
+        filename: `${ctx.build}${hashHolder}.css`,
       }).apply(compiler);
     });
+
     plugins.push(compiler => {
       const Option = require("html-webpack-plugin");
       const templatePath = HtmlWebpackPluginOption.template || "template.html";
