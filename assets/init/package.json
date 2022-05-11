@@ -57,6 +57,7 @@
     "sass-loader": "^12.4.0",
     "sass-resources-loader": "^2.2.4",
     "style-loader": "^3.3.1",
+    "tailwindcss": "^3.0.24",
     "yydevcli": "latest"
   }
 }

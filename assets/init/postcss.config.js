@@ -1,3 +1,7 @@
 module.exports = {
-  plugins: [["postcss-short", { prefix: "x" }], "postcss-preset-env"],
+  plugins: {
+    "postcss-preset-env": {},
+    "postcss-short": { prefix: "x" },
+    tailwindcss: {},
+  },
 };
