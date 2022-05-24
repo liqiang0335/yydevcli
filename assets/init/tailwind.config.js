@@ -1,24 +1,17 @@
+/**
+  在 css文件中导入:
+  @tailwind base; // reset
+  @tailwind components;
+  @tailwind utilities;
+*/
+
 module.exports = {
-  content: ["./main/**/*.{html,js}", "./pages/**/*.{html,js}"],
+  content: [
+    "./main/**/*.{html,js}", //
+    "./pages/**/*.{html,js}",
+  ],
   theme: {
     extend: {},
   },
   plugins: [],
 };
-
-/**
-  在 css文件中导入:
-  
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
-
-.ant-btn {
-  display: inline-flex;
-  align-items: center;
-  text-align: center;
-}
-.ant-btn-primary {
-  background-color: #435ba3;
-}
-*/

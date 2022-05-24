@@ -152,7 +152,7 @@ function getWebpackUserOption(yyconfig, ctx) {
 async function getValidPort({ host, port }) {
   const url = `http://${host}:${port}`;
   try {
-    await axios.get(url);
+    await axios.get(url, { timeout: 3000 });
     return getValidPort({ host, port: port + 1 });
   } catch (err) {
     if (err.code === "ECONNREFUSED") {
