@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const cwd = process.cwd();
 const arg = process.argv;
+const random = require("crypto-random-string");
 /**
  * ----------------------------------------
  * 重命名
@@ -14,7 +15,7 @@ function main() {
   files.forEach((item, i) => {
     const oldName = path.join(cwd, item);
     const ext = path.extname(oldName);
-    const index = `${i + 1}`.padStart(2, "0");
+    const index = `${i + 1}`.padStart(3, "0") + "_" + random({ length: 5 });
     const newName = path.join(cwd, `${prefix}_${index}${ext}`);
     fs.renameSync(oldName, newName);
   });
