@@ -2,7 +2,12 @@ const fs = require("fs");
 const path = require("path");
 const cwd = process.cwd();
 const arg = process.argv;
-
+/**
+ * ----------------------------------------
+ * 重命名
+ * yy rename myname
+ * ----------------------------------------
+ */
 function main() {
   const prefix = arg[arg.length - 1];
   const files = fs.readdirSync(cwd).filter(it => /(jpe?g|png|gif)$/i.test(it));

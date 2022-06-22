@@ -1,6 +1,6 @@
 /**
   在 css文件中导入:
-  @tailwind base; // reset
+  @tailwind base; 
   @tailwind components;
   @tailwind utilities;
 */
@@ -13,5 +13,5 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/line-clamp")],
 };
