@@ -64,6 +64,7 @@ module.exports = function (userOption, ctx) {
     },
     resolve: {
       extensions: [".js", ".jsx", ".vue"],
+      modules: ["/Users/liqiang/Documents/repos/wxtcharts", "node_modules"],
     },
     module: {
       rules: [
@@ -73,7 +74,7 @@ module.exports = function (userOption, ctx) {
           exclude: /node_modules/,
         },
         {
-          test: /ynw.+js$/,
+          test: /(ynw|wxtcharts).+js$/,
           use: [{ loader: "babel-loader", options: babelOps }],
         },
         {

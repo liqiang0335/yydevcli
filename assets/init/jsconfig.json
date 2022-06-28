@@ -6,6 +6,7 @@
     "experimentalDecorators": true,
     "baseUrl": ".",
     "paths": {
+      "@charts/*": ["/Users/liqiang/Documents/repos/wxtcharts/*"],
       "@store/*": ["./main/store/*"],
       "@comps/*": ["./main/component/*"],
       "@script/*": ["./main/script/*"],

@@ -7,15 +7,7 @@ const print = require("../../utils/print");
  */
 module.exports = function BabelOption({ browsers }) {
   print("browsers", browsers);
-  const BabelEnv = [
-    "@babel/env",
-    {
-      modules: "auto",
-      targets: { browsers },
-      useBuiltIns: "usage",
-      corejs: "3",
-    },
-  ];
+  const BabelEnv = ["@babel/env", { modules: "auto", targets: { browsers }, useBuiltIns: "usage", corejs: "3" }];
 
   const CommonPlugins = [
     "webpack-async-module-name",
@@ -37,10 +29,7 @@ module.exports = function BabelOption({ browsers }) {
     },
     react: {
       presets: [BabelEnv, "@babel/preset-react"],
-      plugins: [
-        ...CommonPlugins,
-        ["import", { libraryName: "antd", libraryDirectory: "es", style: true }],
-      ],
+      plugins: [...CommonPlugins, ["import", { libraryName: "antd", libraryDirectory: "es", style: true }]],
     },
   };
 };
