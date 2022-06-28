@@ -139,7 +139,9 @@ function getWebpackUserOption(yyconfig, ctx) {
   if (option?.resolve?.alias) {
     for (let key in option.resolve.alias) {
       const value = option.resolve.alias[key];
-      option.resolve.alias[key] = path.join(ctx.cwd, value);
+      if (!/^\//.test(value)) {
+        option.resolve.alias[key] = path.join(ctx.cwd, value);
+      }
     }
   }
 
