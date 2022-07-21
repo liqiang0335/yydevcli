@@ -17,6 +17,7 @@ module.exports = {
     },
     resolve: {
       alias: {
+        "@charts": "/Users/liqiang/Documents/repos/wxtcharts",
         "@store": "./main/store",
         "@script": "./main/script",
         "@comps": "./main/component",

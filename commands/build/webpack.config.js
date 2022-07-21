@@ -15,6 +15,7 @@ module.exports = function (userOption, ctx) {
   const cssInline = userOption["@cssInline"];
   const hash = userOption["@hash"];
   const cssModules = userOption["@cssModules"];
+  const fileName = userOption["@fileName"] || ctx.build;
   const themeVars = userOption["@themeVars"] || {};
   const HtmlWebpackPluginOption = userOption["@HtmlWebpackPluginOption"] || {};
   const outputPath = userOption.output?.path || ctx.buildFolder + "/dist";
@@ -40,7 +41,7 @@ module.exports = function (userOption, ctx) {
     entry: "./main/index.js",
     target: "web",
     output: {
-      filename: `${ctx.build}${hashHolder}.js`,
+      filename: `${fileName}${hashHolder}.js`,
       path: outputPath,
       clean: true,
     },
@@ -64,7 +65,6 @@ module.exports = function (userOption, ctx) {
     },
     resolve: {
       extensions: [".js", ".jsx", ".vue"],
-      modules: ["/Users/liqiang/Documents/repos/wxtcharts", "node_modules"],
     },
     module: {
       rules: [
@@ -74,7 +74,7 @@ module.exports = function (userOption, ctx) {
           exclude: /node_modules/,
         },
         {
-          test: /(ynw|wxtcharts).+js$/,
+          test: /ynw.+js$/,
           use: [{ loader: "babel-loader", options: babelOps }],
         },
         {
@@ -181,7 +181,7 @@ function getPlugins(ctx, { HtmlWebpackPluginOption, hashHolder }) {
   if (!ctx.isNode) {
     plugins.push(compiler => {
       new MiniCssExtractPlugin({
-        filename: `${ctx.build}${hashHolder}.css`,
+        filename: `${fileName}${hashHolder}.css`,
       }).apply(compiler);
     });
 
