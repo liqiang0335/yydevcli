@@ -45,7 +45,7 @@ module.exports = function (userOption, ctx) {
       path: outputPath,
       clean: true,
     },
-    plugins: getPlugins(ctx, { hashHolder, HtmlWebpackPluginOption }),
+    plugins: getPlugins(ctx, { hashHolder, HtmlWebpackPluginOption, fileName }),
     node: ctx.isNode ? { __dirname: false, __filename: false } : {},
     externals: ctx.isNode ? [nodeExternals()] : [], // node环境排除所有node_modules依赖
     devServer: {
@@ -170,7 +170,7 @@ function shouldOpimization(ctx) {
  * 插件配置
  * ----------------------------------------
  */
-function getPlugins(ctx, { HtmlWebpackPluginOption, hashHolder }) {
+function getPlugins(ctx, { HtmlWebpackPluginOption, hashHolder, fileName }) {
   const plugins = [];
 
   plugins.push(compiler => {
