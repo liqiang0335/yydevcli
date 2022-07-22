@@ -191,7 +191,9 @@ function getPlugins(ctx, { HtmlWebpackPluginOption, hashHolder, fileName }) {
       new Option({
         publicPath: "auto",
         ...HtmlWebpackPluginOption,
-        template: path.join(ctx.buildFolder, templatePath),
+        template: /^\//.test(HtmlWebpackPluginOption.template)
+          ? HtmlWebpackPluginOption.template
+          : path.join(ctx.buildFolder, templatePath),
       }).apply(compiler);
     });
   }
