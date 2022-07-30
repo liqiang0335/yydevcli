@@ -117,7 +117,7 @@ function createScssRules({ cssModules, cssloader }) {
   if (cssModules === false) {
     print("cssModules disabled");
   }
-  const modules = cssModules === false ? cssModules : { localIdentName: "[name]-[local]-[hash:base64:5]" };
+  const modules = cssModules === false ? cssModules : { localIdentName: "[name]-[local]-[hash:base64:8]" };
 
   return {
     test: /\.s[ca]ss$/,
