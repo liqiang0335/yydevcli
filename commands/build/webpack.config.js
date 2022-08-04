@@ -114,10 +114,17 @@ module.exports = function (userOption, ctx) {
  * ----------------------------------------
  */
 function createScssRules({ cssModules, cssloader }) {
+
+  let modules = { localIdentName: "[name]-[local]-[hash:base64:8]" }
+
   if (cssModules === false) {
+    modules = false
     print("cssModules disabled");
   }
-  const modules = cssModules === false ? cssModules : { localIdentName: "[name]-[local]-[hash:base64:8]" };
+
+  if (typeof cssModules === 'string') {
+    modules = { localIdentName: cssModules }
+  }
 
   return {
     test: /\.s[ca]ss$/,

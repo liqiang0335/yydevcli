@@ -17,6 +17,7 @@
 - `@browsers": ["chrome >= 60"]` babelOption
 - `@cssModules": true`
 - `@fileName": '[ctx.build]'`
+- `@cssModules": `[name]-[local]-[hash:base64:12]`
 - `@cssInline": false` 使用 style-loader 加载
 
 ### 其他
