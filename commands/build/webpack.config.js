@@ -11,6 +11,7 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
  * ----------------------------------------
  */
 module.exports = function (userOption, ctx) {
+  const pack = require(process.cwd() + "/package.json");
   const browsers = userOption["@browsers"] || ["chrome >= 60"];
   const cssInline = userOption["@cssInline"];
   const hash = userOption["@hash"];
@@ -21,10 +22,24 @@ module.exports = function (userOption, ctx) {
   const outputPath = userOption.output?.path || ctx.buildFolder + "/dist";
 
   const { framework = "react", isPro } = ctx;
-  const hashHolder = hash ? ".[contenthash:6]" : ".bundle";
+  const hashHolder = hash ? "[contenthash:6]" : `${pack.version}.bundle`;
   const cssloader = cssInline ? "style-loader" : MiniCssExtractPlugin.loader;
-  const sassRule = createScssRules({ cssModules, cssloader });
+
+  const share = {
+    pack,
+    HtmlWebpackPluginOption,
+    hashHolder,
+    cssloader,
+    outputPath,
+    fileName,
+    cssModules,
+    hash,
+    cssInline,
+    browsers,
+  };
+
   const babelOps = babelOptions({ browsers })[framework];
+  const sassRule = createScssRules(share);
 
   // 检测SCSS全局变量
   const sassVar = path.join(ctx.buildFolder, "style/var.scss");
@@ -41,11 +56,11 @@ module.exports = function (userOption, ctx) {
     entry: "./main/index.js",
     target: "web",
     output: {
-      filename: `${fileName}${hashHolder}.js`,
+      filename: `${fileName}.${hashHolder}.js`,
       path: outputPath,
       clean: true,
     },
-    plugins: getPlugins(ctx, { hashHolder, HtmlWebpackPluginOption, fileName }),
+    plugins: getPlugins(ctx, share),
     node: ctx.isNode ? { __dirname: false, __filename: false } : {},
     externals: ctx.isNode ? [nodeExternals()] : [], // node环境排除所有node_modules依赖
     devServer: {
@@ -113,17 +128,17 @@ module.exports = function (userOption, ctx) {
  * SCSS配置
  * ----------------------------------------
  */
-function createScssRules({ cssModules, cssloader }) {
-
-  let modules = { localIdentName: "[name]-[local]-[hash:base64:8]" }
+function createScssRules(share) {
+  const { cssModules, cssloader } = share;
+  let modules = { localIdentName: "[name]-[local]-[hash:base64:8]" };
 
   if (cssModules === false) {
-    modules = false
+    modules = false;
     print("cssModules disabled");
   }
 
-  if (typeof cssModules === 'string') {
-    modules = { localIdentName: cssModules }
+  if (typeof cssModules === "string") {
+    modules = { localIdentName: cssModules };
   }
 
   return {
@@ -177,7 +192,8 @@ function shouldOpimization(ctx) {
  * 插件配置
  * ----------------------------------------
  */
-function getPlugins(ctx, { HtmlWebpackPluginOption, hashHolder, fileName }) {
+function getPlugins(ctx, share) {
+  const { hashHolder, HtmlWebpackPluginOption, fileName } = share;
   const plugins = [];
 
   plugins.push(compiler => {
@@ -188,7 +204,7 @@ function getPlugins(ctx, { HtmlWebpackPluginOption, hashHolder, fileName }) {
   if (!ctx.isNode) {
     plugins.push(compiler => {
       new MiniCssExtractPlugin({
-        filename: `${fileName}${hashHolder}.css`,
+        filename: `${fileName}.${hashHolder}.css`,
       }).apply(compiler);
     });
 
