@@ -15,9 +15,9 @@
 - `@themeVars: Object`: 可配置 antd 主题选项
 - `@HtmlWebpackPluginOption: Object`: HTML 模版配置
 - `@browsers": ["chrome >= 60"]` babelOption
-- `@cssModules": true`
-- `@fileName": '[ctx.build]'`
-- `@cssModules`: `[name]-[local]-[hash:base64:12]`
+- `@fileName": '[ctx.build]'` 存储文件名称
+- `@saveFolder": [bundle/]` 存储文件夹名称
+- `@cssModules`: `[name]-[local]-[hash:base64:12]` 设置 CSS 模块名称形式
 - `@cssInline": false` 使用 style-loader 加载
 
 ### 其他

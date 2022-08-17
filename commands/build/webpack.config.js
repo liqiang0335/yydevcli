@@ -20,12 +20,14 @@ module.exports = function (userOption, ctx) {
   const themeVars = userOption["@themeVars"] || {};
   const HtmlWebpackPluginOption = userOption["@HtmlWebpackPluginOption"] || {};
   const outputPath = userOption.output?.path || ctx.buildFolder + "/dist";
+  const saveFolder = userOption["@saveFolder"] || "bundle/";
 
   const { framework = "react", isPro } = ctx;
   const hashHolder = hash ? "[contenthash:6]" : `${pack.version}.bundle`;
   const cssloader = cssInline ? "style-loader" : MiniCssExtractPlugin.loader;
 
   const share = {
+    saveFolder,
     pack,
     HtmlWebpackPluginOption,
     hashHolder,
@@ -56,17 +58,16 @@ module.exports = function (userOption, ctx) {
     entry: "./main/index.js",
     target: "web",
     output: {
-      filename: `${fileName}.${hashHolder}.js`,
+      filename: saveFolder + `${fileName}.${hashHolder}.js`,
       path: outputPath,
       clean: true,
+      assetModuleFilename: "assets/[hash][ext]",
     },
     plugins: getPlugins(ctx, share),
     node: ctx.isNode ? { __dirname: false, __filename: false } : {},
     externals: ctx.isNode ? [nodeExternals()] : [], // node环境排除所有node_modules依赖
     devServer: {
-      static: {
-        directory: outputPath,
-      },
+      static: { directory: outputPath },
       allowedHosts: "all",
       host: "127.0.0.1",
       port: 8000,
@@ -78,9 +79,7 @@ module.exports = function (userOption, ctx) {
       maxEntrypointSize: 512000,
       maxAssetSize: 512000,
     },
-    resolve: {
-      extensions: [".js", ".jsx", ".vue"],
-    },
+    resolve: { extensions: [".js", ".jsx", ".vue"] },
     module: {
       rules: [
         {
@@ -193,7 +192,7 @@ function shouldOpimization(ctx) {
  * ----------------------------------------
  */
 function getPlugins(ctx, share) {
-  const { hashHolder, HtmlWebpackPluginOption, fileName } = share;
+  const { hashHolder, HtmlWebpackPluginOption, fileName, saveFolder } = share;
   const plugins = [];
 
   plugins.push(compiler => {
@@ -204,7 +203,7 @@ function getPlugins(ctx, share) {
   if (!ctx.isNode) {
     plugins.push(compiler => {
       new MiniCssExtractPlugin({
-        filename: `${fileName}.${hashHolder}.css`,
+        filename: saveFolder + `${fileName}.${hashHolder}.css`,
       }).apply(compiler);
     });
 
