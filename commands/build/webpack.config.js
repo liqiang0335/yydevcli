@@ -12,6 +12,7 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
  */
 module.exports = function (userOption, ctx) {
   const pack = require(process.cwd() + "/package.json");
+
   const browsers = userOption["@browsers"] || ["chrome >= 60"];
   const cssInline = userOption["@cssInline"];
   const hash = userOption["@hash"];
@@ -21,9 +22,10 @@ module.exports = function (userOption, ctx) {
   const HtmlWebpackPluginOption = userOption["@HtmlWebpackPluginOption"] || {};
   const outputPath = userOption.output?.path || ctx.buildFolder + "/dist";
   const saveFolder = userOption["@saveFolder"] || "bundle/";
+  const version = userOption["@version"] || pack.version;
 
   const { framework = "react", isPro } = ctx;
-  const hashHolder = hash ? "[contenthash:6]" : `${pack.version}.bundle`;
+  const hashHolder = hash ? "[contenthash:6]" : `${version}.bundle`;
   const cssloader = cssInline ? "style-loader" : MiniCssExtractPlugin.loader;
 
   const share = {
