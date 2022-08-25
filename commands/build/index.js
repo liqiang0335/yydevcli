@@ -33,6 +33,8 @@ module.exports = async ctx => {
   const { host, port } = option.devServer;
   option.devServer.port = await getValidPort({ host, port });
 
+  print("http://" + host + ":" + port);
+
   if (ctx.logs) {
     print("ctx", ctx);
     print("option", option);

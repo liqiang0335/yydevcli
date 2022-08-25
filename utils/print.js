@@ -1,5 +1,5 @@
 function print() {
-  const params = [`[YY]`].concat(Array.from(arguments));
+  const params = [`⭕️`].concat(Array.from(arguments));
   console.log.apply(null, params);
 }
 
