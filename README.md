@@ -19,6 +19,7 @@
 - `@saveFolder": [bundle/]` 存储文件夹名称
 - `@version": [package.version]` 存储文件的版本号
 - `@cssModules`: `[name]-[local]-[hash:base64:12]` 设置 CSS 模块名称形式
+- `@template": [true]` 是否创建 template.html
 - `@cssInline": false` 使用 style-loader 加载
 
 ### 其他

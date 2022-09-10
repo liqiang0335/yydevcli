@@ -67,7 +67,7 @@ module.exports = function (userOption, ctx) {
     },
     plugins: getPlugins(ctx, share),
     node: ctx.isNode ? { __dirname: false, __filename: false } : {},
-    externals: ctx.isNode ? [nodeExternals()] : [], // node环境排除所有node_modules依赖
+    externals: ctx.isNode ? [nodeExternals()] : [], // node 环境排除所有 node_modules 依赖
     devServer: {
       static: { directory: outputPath },
       allowedHosts: "all",
