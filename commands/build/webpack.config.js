@@ -212,12 +212,14 @@ function getPlugins(ctx, share) {
     plugins.push(compiler => {
       const Option = require("html-webpack-plugin");
       const templatePath = HtmlWebpackPluginOption.template || "template.html";
+
       new Option({
         publicPath: "auto",
         ...HtmlWebpackPluginOption,
         template: /^\//.test(HtmlWebpackPluginOption.template)
           ? HtmlWebpackPluginOption.template
           : path.join(ctx.buildFolder, templatePath),
+        publicPath: ctx.isHot ? "" : HtmlWebpackPluginOption.publicPath,
       }).apply(compiler);
     });
   }
