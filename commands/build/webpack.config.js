@@ -190,14 +190,21 @@ function getPlugins(ctx, share) {
       const Option = require("html-webpack-plugin");
       const templatePath = HtmlWebpackPluginOption.template || "template.html";
 
-      new Option({
+      const ops = {
         publicPath: "auto",
         ...HtmlWebpackPluginOption,
         template: /^\//.test(HtmlWebpackPluginOption.template)
           ? HtmlWebpackPluginOption.template // 如果匹配到全局模版路径,则直接使用
           : path.join(ctx.buildFolder, templatePath),
-        publicPath: ctx.isHot ? "" : HtmlWebpackPluginOption.publicPath,
-      }).apply(compiler);
+      };
+
+      if (HtmlWebpackPluginOption.publicPath) {
+        if (!ctx.isHot) {
+          ops.publicPath = HtmlWebpackPluginOption.publicPath;
+        }
+      }
+
+      new Option(ops).apply(compiler);
     });
   }
 
