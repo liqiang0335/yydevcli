@@ -89,36 +89,19 @@ module.exports = function (userOption, ctx) {
           use: [{ loader: "babel-loader", options: babelOps }],
           exclude: /node_modules/,
         },
-        {
-          test: /ynw.+js$/,
-          use: [{ loader: "babel-loader", options: babelOps }],
-        },
-        {
-          test: /\.css$/,
-          use: [cssloader, "css-loader", "postcss-loader"],
-        },
+        { test: /ynw.+js$/, use: [{ loader: "babel-loader", options: babelOps }] },
+        { test: /\.css$/, use: [cssloader, "css-loader", "postcss-loader"] },
         sassRule,
         {
           test: /\.less$/i,
           use: [
             cssloader,
             "css-loader",
-            {
-              loader: "less-loader",
-              options: {
-                lessOptions: { javascriptEnabled: true, modifyVars: themeVars },
-              },
-            },
+            { loader: "less-loader", options: { lessOptions: { javascriptEnabled: true, modifyVars: themeVars } } },
           ],
         },
-        {
-          test: /\.(png|svg|jpe?g|gif)$/i,
-          type: "asset/resource",
-        },
-        {
-          test: /\.(woff|woff2|eot|ttf|otf)$/i,
-          type: "asset/resource",
-        },
+        { test: /\.(png|svg|jpe?g|gif)$/i, type: "asset/resource" },
+        { test: /\.(woff|woff2|eot|ttf|otf)$/i, type: "asset/resource" },
       ],
     },
   };
@@ -146,15 +129,9 @@ function createScssRules(share) {
     test: /\.s[ca]ss$/,
     use: [
       cssloader,
-      {
-        loader: "css-loader",
-        options: { importLoaders: 2, modules },
-      },
+      { loader: "css-loader", options: { importLoaders: 2, modules } },
       "postcss-loader",
-      {
-        loader: "sass-loader",
-        options: { implementation: require("sass") },
-      },
+      { loader: "sass-loader", options: { implementation: require("sass") } },
     ],
   };
 }
@@ -217,7 +194,7 @@ function getPlugins(ctx, share) {
         publicPath: "auto",
         ...HtmlWebpackPluginOption,
         template: /^\//.test(HtmlWebpackPluginOption.template)
-          ? HtmlWebpackPluginOption.template
+          ? HtmlWebpackPluginOption.template // 如果匹配到全局模版路径,则直接使用
           : path.join(ctx.buildFolder, templatePath),
         publicPath: ctx.isHot ? "" : HtmlWebpackPluginOption.publicPath,
       }).apply(compiler);
