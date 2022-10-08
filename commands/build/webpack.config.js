@@ -15,7 +15,7 @@ module.exports = function (userOption, ctx) {
 
   const browsers = userOption["@browsers"] || ["chrome >= 60"];
   const cssInline = userOption["@cssInline"];
-  const hash = userOption["@hash"];
+  let hash = userOption["@hash"];
   const cssModules = userOption["@cssModules"];
   const fileName = userOption["@fileName"] || ctx.build;
   const themeVars = userOption["@themeVars"] || {};
@@ -23,6 +23,10 @@ module.exports = function (userOption, ctx) {
   const outputPath = userOption.output?.path || ctx.buildFolder + "/dist";
   const saveFolder = userOption["@saveFolder"] || "bundle/";
   const version = userOption["@version"] || pack.version;
+
+  if (ctx.isHot) {
+    hash = true;
+  }
 
   const { framework = "react", isPro } = ctx;
   const hashHolder = hash ? "[contenthash:6]" : `${version}.bundle`;
