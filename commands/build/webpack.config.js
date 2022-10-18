@@ -24,10 +24,6 @@ module.exports = function (userOption, ctx) {
   const saveFolder = userOption["@saveFolder"] || "bundle/";
   const version = userOption["@version"] || pack.version;
 
-  if (ctx.isHot) {
-    hash = true;
-  }
-
   const { framework = "react", isPro } = ctx;
   const hashHolder = hash ? "[contenthash:6]" : `${version}.bundle`;
   const cssloader = cssInline ? "style-loader" : MiniCssExtractPlugin.loader;
@@ -195,8 +191,8 @@ function getPlugins(ctx, share) {
       const templatePath = HtmlWebpackPluginOption.template || "template.html";
 
       const ops = {
-        publicPath: "auto",
         ...HtmlWebpackPluginOption,
+        publicPath: "auto",
         template: /^\//.test(HtmlWebpackPluginOption.template)
           ? HtmlWebpackPluginOption.template // 如果匹配到全局模版路径,则直接使用
           : path.join(ctx.buildFolder, templatePath),
