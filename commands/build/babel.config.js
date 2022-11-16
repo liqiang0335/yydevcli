@@ -28,7 +28,7 @@ module.exports = function BabelOption({ browsers }) {
       ],
     },
     react: {
-      presets: [BabelEnv, "@babel/preset-react"],
+      presets: [BabelEnv, ["@babel/preset-react", { runtime: "automatic" }]],
       plugins: [...CommonPlugins, ["import", { libraryName: "antd", libraryDirectory: "es", style: true }]],
     },
   };
