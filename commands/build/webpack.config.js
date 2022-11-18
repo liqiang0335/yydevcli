@@ -55,7 +55,7 @@ module.exports = function (userOption, ctx) {
     });
   }
 
-  return {
+  const options = {
     mode: isPro ? "production" : "development",
     entry: "./main/index.js",
     target: "web",
@@ -105,6 +105,8 @@ module.exports = function (userOption, ctx) {
       ],
     },
   };
+
+  return options;
 };
 
 /**
