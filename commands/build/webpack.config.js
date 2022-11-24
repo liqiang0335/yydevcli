@@ -101,7 +101,7 @@ module.exports = function (userOption, ctx) {
           ],
         },
         { test: /\.(png|svg|jpe?g|gif)$/i, type: "asset/resource" },
-        { test: /\.(woff|woff2|eot|ttf|otf)$/i, type: "asset/resource" },
+        { test: /\.(woff|woff2|eot|ttf|otf|docx?|xlsx?)$/i, type: "asset/resource" },
       ],
     },
   };
