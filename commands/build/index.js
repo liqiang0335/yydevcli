@@ -49,7 +49,6 @@ module.exports = async ctx => {
   }
 
   const compiler = webpack(option);
-  console.log("🍎  ctx", ctx);
   const envHandler = {
     dev() {
       compiler.watch({ aggregateTimeout: 300, poll: undefined }, errorHandler);
