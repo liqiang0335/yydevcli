@@ -24,6 +24,8 @@ module.exports = function (userOption, ctx) {
   const saveFolder = userOption["@saveFolder"] || "bundle/";
   const version = userOption["@version"] || pack.version;
 
+  print("输出路径", outputPath);
+
   const { framework = "react", isPro } = ctx;
   const hashHolder = hash ? "[contenthash:6]" : `${version}.bundle`;
   const cssloader = cssInline ? "style-loader" : MiniCssExtractPlugin.loader;
@@ -48,7 +50,7 @@ module.exports = function (userOption, ctx) {
   // 检测SCSS全局变量
   const sassVar = path.join(ctx.buildFolder, "style/var.scss");
   if (fs.existsSync(sassVar)) {
-    print("use sass global variable");
+    print("加载全局变量: style/var.scss");
     sassRule.use.push({
       loader: "sass-resources-loader",
       options: { resources: sassVar },

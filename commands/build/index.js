@@ -49,12 +49,17 @@ module.exports = async ctx => {
   }
 
   const compiler = webpack(option);
+  console.log("🍎  ctx", ctx);
   const envHandler = {
     dev() {
       compiler.watch({ aggregateTimeout: 300, poll: undefined }, errorHandler);
     },
     pro() {
-      compiler.run();
+      if (ctx.watch === "true") {
+        compiler.watch({ aggregateTimeout: 300, poll: undefined }, errorHandler);
+      } else {
+        compiler.run();
+      }
     },
     async hot() {
       const server = new WebpackDevServer(option.devServer, compiler);
