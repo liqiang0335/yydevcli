@@ -18,7 +18,7 @@
 - `@fileName": '[ctx.build]'` 存储文件名称
 - `@saveFolder": [bundle/]` 存储文件夹名称, 可设置为空字符.
 - `@version": [package.version]` 存储文件的版本号
-- `@cssModules`: `[name]-[local]-[hash:base64:12]` 设置 CSS 模块名称形式
+- `@cssModules`: `[name]-[local]-[hash:base64:12]` 设置 CSS 模块名称形式, 如果值为 false: 不使用 cssModules
 - `@template": [true]` 是否创建 template.html
 - `@cssInline": false` 使用 style-loader 加载
 

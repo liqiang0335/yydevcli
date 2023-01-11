@@ -21,7 +21,7 @@ module.exports = function (userOption, ctx) {
   const themeVars = userOption["@themeVars"] || {};
   const HtmlWebpackPluginOption = userOption["@HtmlWebpackPluginOption"] || {};
   const outputPath = userOption.output?.path || ctx.buildFolder + "/dist";
-  const saveFolder = userOption["@saveFolder"] || "bundle/";
+  const saveFolder = userOption["@saveFolder"] === undefined ? "bundle/" : userOption["@saveFolder"];
   const version = userOption["@version"] || pack.version;
 
   print("输出路径", outputPath);
