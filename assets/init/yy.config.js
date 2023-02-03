@@ -8,10 +8,6 @@
 module.exports = {
   common: {
     "@hash": false,
-    "@themeVars": {
-      "@primary-color": "#435ba3",
-      "@border-radius-base": "2px",
-    },
     "@HtmlWebpackPluginOption": {
       filename: "index.html",
     },
