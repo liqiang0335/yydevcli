@@ -74,7 +74,7 @@ module.exports = function (userOption, ctx) {
       static: { directory: outputPath },
       allowedHosts: "all",
       host: "127.0.0.1",
-      port: 8000,
+      port: 10000,
       open: true,
     },
     optimization: shouldOpimization(ctx),
