@@ -2,5 +2,9 @@
   "putDirectory": {
     "local": "/Users/liqiang/Documents/repos/liqiang/yydevcli/temp",
     "remote": "/root"
+  },
+  "Command": {
+    "cwd": "/root",
+    "exec": "ls -l"
   }
 }

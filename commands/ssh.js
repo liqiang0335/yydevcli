@@ -33,6 +33,7 @@ module.exports = async ctx => {
         uploadConfigPath,
         JSON.stringify({
           putDirectory: { local: "本地文件夹", remote: "远程文件夹" },
+          Command: { cwd: "/root", exec: "ls -l" },
         })
       );
     }
@@ -64,13 +65,16 @@ module.exports = async ctx => {
     return console.log("请先配置上传文件夹信息");
   }
 
-  const { putDirectory } = uploadConfig;
-  await putDirectoryHandler(putDirectory.local, putDirectory.remote);
-
+  await putDirectoryHandler(uploadConfig);
   process.exit();
 };
 
-async function putDirectoryHandler(dirLocal, dirRemote) {
+async function putDirectoryHandler(uploadConfig) {
+  const { putDirectory, Command } = uploadConfig;
+
+  const dirLocal = putDirectory.local;
+  const dirRemote = putDirectory.remote;
+
   console.log("本地目录", dirLocal);
   console.log("远程目录", dirRemote);
   console.log("--------");
@@ -78,7 +82,7 @@ async function putDirectoryHandler(dirLocal, dirRemote) {
   const successful = [];
 
   // 不是所有服务器都支持并发
-  return ssh
+  await ssh
     .putDirectory(dirLocal, dirRemote, {
       recursive: true,
       concurrency: 10,
@@ -103,10 +107,25 @@ async function putDirectoryHandler(dirLocal, dirRemote) {
     .then(function (status) {
       console.log("--------");
       if (failed.length > 0) {
-        console.log("❌ 上传失败:", failed.length);
+        console.log("❌ 上传失败:".red, failed.length);
       }
       if (successful.length > 0) {
-        console.log("✅ 上传成功:", successful.length);
+        console.log("✅ 上传成功:".green, successful.length);
       }
     });
+
+  if (Command) {
+    const _cwd = Command.cwd;
+    const _command = Command.exec;
+    console.log("🔺 执行命令".green, `cd ${_cwd}`.green);
+    console.log("🔺 执行命令".green, `${_command}`.green);
+    await ssh.execCommand(_command, { cwd: _cwd }).then(function (result) {
+      if (result.stdout) {
+        console.log(result.stdout);
+      }
+      if (result.stderr) {
+        console.log(result.stderr);
+      }
+    });
+  }
 }
