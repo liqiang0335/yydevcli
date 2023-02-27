@@ -60,9 +60,14 @@ module.exports = async ctx => {
     return;
   }
 
+  if (!_fs.existsSync(uploadConfigPath)) {
+    console.log("上传配置未找到", uploadConfigPath);
+    console.log("使用 'yy ssh init' 命令初始化配置文件");
+    return;
+  }
   const uploadConfig = require(uploadConfigPath);
   if (!uploadConfig.putDirectory) {
-    return console.log("请先配置上传文件夹信息");
+    return console.log("请先配置上传文件夹信息:putDirectory");
   }
 
   await putDirectoryHandler(uploadConfig);
