@@ -5,3 +5,4 @@ node_modules
 test.js
 _build
 commands/build/.temp_cache/
+temp/

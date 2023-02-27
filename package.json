@@ -20,6 +20,7 @@
     "html-webpack-plugin": "^5.5.0",
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.7.2",
+    "node-ssh": "^13.0.1",
     "sass": "^1.58.0",
     "terser-webpack-plugin": "^5.3.1",
     "webpack": "^5.75.0",
