@@ -6,10 +6,11 @@ const ssh = new NodeSSH();
 const USER_HOME = process.env.HOME || process.env.USERPROFILE;
 /**
  * ----------------------------------------
- * SSH 上传文件
+ * 上传文件
  * ========================================
  * yy ssh
  * yy ssh init
+ * yy ssh=[keyName]
  * ----------------------------------------
  */
 module.exports = async ctx => {
@@ -27,37 +28,52 @@ module.exports = async ctx => {
       );
     }
     if (!_fs.existsSync(uploadConfigPath)) {
-      await fs.writeFile(uploadConfigPath, JSON.stringify({ local: "本地文件夹", remote: "远程文件夹" }));
+      console.log("创建上传配置文件", uploadConfigPath);
+      await fs.writeFile(
+        uploadConfigPath,
+        JSON.stringify({
+          putDirectory: { local: "本地文件夹", remote: "远程文件夹" },
+        })
+      );
     }
     return;
   }
 
   // 读取配置文件名称
-  let connectKey = ""; // 默认配置
-  if (ctx.ssh === "true") {
-    connectKey = "defaults";
+  let connectKey = "defaults"; // 默认配置
+  if (ctx.ssh !== "true") {
+    connectKey = ctx.ssh;
   }
-  console.log("⭕️ 读取配置: ", connectKey);
+  console.log("读取配置: ", connectKey);
+
   const connectConfig = require(connectConfigPath)[connectKey];
-  console.log("⭕️ 连接服务器: ", connectConfig.host);
+  if (!connectConfig) {
+    return console.log("请先配置连接信息", connectConfigPath);
+  }
+  console.log("连接服务器: ", connectConfig.host);
 
   try {
     await ssh.connect(connectConfig);
   } catch (err) {
-    console.log("⭕️", "连接失败, 请检查配置文件: ", connectConfigPath);
+    console.log("连接失败, 请检查配置文件: ", connectConfigPath);
     return;
   }
 
-  try {
-    const uploadConfig = require(uploadConfigPath);
-  } catch (err) {
-    throw new Error(err);
+  const uploadConfig = require(uploadConfigPath);
+  if (!uploadConfig.putDirectory) {
+    return console.log("请先配置上传文件夹信息");
   }
 
-  // uploadDirs(localConfig.local, localConfig.remote);
+  const { putDirectory } = uploadConfig;
+  await putDirectoryHandler(putDirectory.local, putDirectory.remote);
+
+  process.exit();
 };
 
-async function uploadDirs(dirLocal, dirRemote) {
+async function putDirectoryHandler(dirLocal, dirRemote) {
+  console.log("本地目录", dirLocal);
+  console.log("远程目录", dirRemote);
+  console.log("--------");
   const failed = [];
   const successful = [];
 
@@ -73,27 +89,24 @@ async function uploadDirs(dirLocal, dirRemote) {
           baseName !== "node_modules" // 不上传文件夹 node_modules
         );
       },
-      tick: function (uploadConfigPath, remotePath, error) {
+      tick: function (file, remotePath, error) {
+        const fileName = path.basename(file);
+        console.log("正在上传...", fileName);
         if (error) {
-          failed.push(uploadConfigPath);
+          console.log("❌ 出现错误", fileName);
+          failed.push(fileName);
         } else {
-          successful.push(uploadConfigPath);
+          successful.push(fileName);
         }
       },
     })
     .then(function (status) {
-      console.log("状态", status ? "成功" : "失败");
+      console.log("--------");
       if (failed.length > 0) {
-        console.log("上传失败:");
-        for (let fail_item of failed) {
-          console.log("-- " + fail_item + "\n");
-        }
+        console.log("❌ 上传失败:", failed.length);
       }
       if (successful.length > 0) {
-        console.log("上传成功:");
-        for (let suc_item of successful) {
-          console.log("-- " + suc_item + "\n");
-        }
+        console.log("✅ 上传成功:", successful.length);
       }
     });
 }
