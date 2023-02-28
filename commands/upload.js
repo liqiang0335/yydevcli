@@ -14,7 +14,7 @@ const USER_HOME = process.env.HOME || process.env.USERPROFILE;
 module.exports = async ctx => {
   const cwd = process.cwd();
   const serveFilePath = path.join(USER_HOME, "yy.serve.json");
-  const upFilePath = path.join(cwd, "yy.upload.json");
+  const upFilePath = path.join(cwd, "yy.upload.js");
 
   if (ctx.init) {
     if (!_fs.existsSync(serveFilePath)) {
@@ -30,12 +30,13 @@ module.exports = async ctx => {
       console.log("create: ", upFilePath);
       await fs.writeFile(
         upFilePath,
-        JSON.stringify({
-          serve: "defaults",
-          folder: { local: "", remote: "" },
-          files: [{ local: "", remote: "" }],
-          shell: { cwd: "/root", exec: "ls -l" },
-        })
+        "module.exports =" +
+          JSON.stringify({
+            serve: "defaults",
+            folder: { local: "", remote: "" },
+            files: [{ local: "", remote: "" }],
+            shell: { cwd: "/root", exec: "ls -l" },
+          })
       );
     }
 
