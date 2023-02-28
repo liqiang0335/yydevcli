@@ -8,31 +8,30 @@ const USER_HOME = process.env.HOME || process.env.USERPROFILE;
  * ----------------------------------------
  * 上传文件
  * ========================================
- * yy ssh
- * yy ssh init
- * yy ssh=[keyName]
+ * yy upload
  * ----------------------------------------
  */
 module.exports = async ctx => {
   const cwd = process.cwd();
-  const connectConfigPath = path.join(USER_HOME, `yyssh.connect.json`);
-  const uploadConfigPath = path.join(cwd, `yyssh.upload.json`);
+  const serveFilePath = path.join(USER_HOME, "yy.serve.json");
+  const upFilePath = path.join(cwd, "yy.upload.json");
 
   if (ctx.init) {
-    if (!_fs.existsSync(connectConfigPath)) {
+    if (!_fs.existsSync(serveFilePath)) {
       await fs.writeFile(
-        connectConfigPath,
+        serveFilePath,
         JSON.stringify({
-          defaults: { host: "", username: "", password: "", privateKeyPath: "" },
+          defaults: { host: "", username: "", password: "", privateKeyPath: "", port: 22 },
         })
       );
     }
 
-    if (!_fs.existsSync(uploadConfigPath)) {
-      console.log("create: ", uploadConfigPath);
+    if (!_fs.existsSync(upFilePath)) {
+      console.log("create: ", upFilePath);
       await fs.writeFile(
-        uploadConfigPath,
+        upFilePath,
         JSON.stringify({
+          serve: "defaults",
           folder: { local: "", remote: "" },
           files: [{ local: "", remote: "" }],
           shell: { cwd: "/root", exec: "ls -l" },
@@ -43,35 +42,36 @@ module.exports = async ctx => {
     return;
   }
 
+  if (!_fs.existsSync(upFilePath)) {
+    console.log("缺少配置文件", upFilePath);
+    console.log("使用 'yy upload init' 命令初始化配置文件");
+    return;
+  }
+
+  const upOption = require(upFilePath);
+  const { files, folder, shell, serve } = upOption;
+
   // 读取配置文件名称
-  let connectKey = "defaults"; // default config
-  if (ctx.ssh !== "true") {
-    connectKey = ctx.ssh;
-  }
-  console.log("connect use: ", connectKey);
+  let serveKey = serve || "defaults";
+  console.log("使用服务器配置", serveKey);
 
-  const connectConfig = require(connectConfigPath)[connectKey];
-  if (!connectConfig) {
-    return console.log("请设置", connectKey, connectConfigPath);
+  const serveOption = require(serveFilePath)[serveKey];
+  if (!serveOption) {
+    return console.log("读取服务器配置失败", serveFilePath);
   }
 
-  console.log("connect host: ", connectConfig.host);
+  console.log("正在连接", `${serveOption.username}@${serveOption.host}:${serveOption.port || 22}`);
 
   try {
-    await ssh.connect(connectConfig);
+    await ssh.connect(serveOption);
+    console.log("连接成功");
+    if (ctx.test) {
+      process.exit();
+    }
   } catch (err) {
-    console.log("连接失败, 请检查配置文件: ", connectConfigPath);
+    console.log("连接失败,请检查配置文件", serveFilePath);
     return;
   }
-
-  if (!_fs.existsSync(uploadConfigPath)) {
-    console.log("缺少配置文件", uploadConfigPath);
-    console.log("使用 'yy ssh init' 命令初始化配置文件");
-    return;
-  }
-
-  const uploadConfig = require(uploadConfigPath);
-  const { files, folder, shell } = uploadConfig;
 
   if (folder.local && folder.remote) {
     await putDirectoryHandler(folder);
@@ -92,8 +92,8 @@ module.exports = async ctx => {
  * ----------------------------------------
  */
 async function putDirectoryHandler({ local, remote }) {
-  console.log("local folder", local);
-  console.log("remote folder", remote);
+  console.log("本地文件夹", local);
+  console.log("远程文件夹", remote);
   console.log("--------");
   const failed = [];
   const successful = [];
@@ -147,8 +147,8 @@ function putFilesHandler(files) {
 async function runCommand(shell) {
   const _cwd = shell.cwd;
   const _command = shell.exec;
-  console.log("🔺 RUN".green, `cd ${_cwd}`.green);
-  console.log("🔺 RUN".green, `${_command}`.green);
+  console.log("🔺 执行命令".green, `cd ${_cwd}`.green);
+  console.log("🔺 执行命令".green, `${_command}`.green);
   await ssh.execCommand(_command, { cwd: _cwd }).then(function (result) {
     if (result.stdout) {
       console.log(result.stdout);
