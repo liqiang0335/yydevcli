@@ -134,6 +134,9 @@ async function putDirectoryHandler({ local, remote }) {
 }
 
 function putFilesHandler(files) {
+  files = files.filter(it => it.local && it.remote);
+  if (files.length === 0) return;
+
   return ssh.putFiles(files).then(
     function () {
       console.log("✅ 上传成功");
