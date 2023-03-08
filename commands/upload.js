@@ -74,10 +74,10 @@ module.exports = async ctx => {
     return;
   }
 
-  if (folder.local && folder.remote) {
+  if (folder?.local && folder.remote) {
     await putDirectoryHandler(folder);
   }
-  if (files.length > 0) {
+  if (Array.isArray(files) && files.length > 0) {
     await putFilesHandler(files);
   }
   if (shell?.exec) {
