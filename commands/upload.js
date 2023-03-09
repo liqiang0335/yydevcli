@@ -6,12 +6,11 @@ const ssh = new NodeSSH();
 const USER_HOME = process.env.HOME || process.env.USERPROFILE;
 /**
  * ----------------------------------------
- * 上传文件
- * ========================================
  * yy upload
+ * yy upload init
  * ----------------------------------------
  */
-module.exports = async ctx => {
+module.exports = async (ctx) => {
   const cwd = process.cwd();
   const serveFilePath = path.join(USER_HOME, "yy.serve.json");
   const upFilePath = path.join(cwd, "yy.upload.js");
@@ -21,7 +20,13 @@ module.exports = async ctx => {
       await fs.writeFile(
         serveFilePath,
         JSON.stringify({
-          defaults: { host: "", username: "", password: "", privateKeyPath: "", port: 22 },
+          defaults: {
+            host: "",
+            username: "",
+            password: "",
+            privateKeyPath: "",
+            port: 22,
+          },
         })
       );
     }
@@ -32,10 +37,12 @@ module.exports = async ctx => {
         upFilePath,
         "module.exports =" +
           JSON.stringify({
-            serve: "defaults",
-            folder: { local: "", remote: "" },
-            files: [{ local: "", remote: "" }],
-            shell: { cwd: "/root", exec: "ls -l" },
+            defaults: {
+              serve: "defaults",
+              folder: { local: "", remote: "" },
+              files: [{ local: "", remote: "" }],
+              shell: { cwd: "/root", exec: "ls -l" },
+            },
           })
       );
     }
@@ -50,7 +57,12 @@ module.exports = async ctx => {
   }
 
   const upOption = require(upFilePath);
-  const { files, folder, shell, serve } = upOption;
+  const optionKey = ctx.upload === "true" ? "defaults" : ctx.upload;
+  console.log("使用上传配置", optionKey);
+  if (!upOption[optionKey]) {
+    return console.log("读取上传配置失败", optionKey);
+  }
+  const { files, folder, shell, serve } = upOption[optionKey];
 
   // 读取配置文件名称
   let serveKey = serve || "defaults";
@@ -61,7 +73,10 @@ module.exports = async ctx => {
     return console.log("读取服务器配置失败", serveFilePath);
   }
 
-  console.log("正在连接", `${serveOption.username}@${serveOption.host}:${serveOption.port || 22}`);
+  console.log(
+    "正在连接",
+    `${serveOption.username}@${serveOption.host}:${serveOption.port || 22}`
+  );
 
   try {
     await ssh.connect(serveOption);
@@ -134,7 +149,7 @@ async function putDirectoryHandler({ local, remote }) {
 }
 
 function putFilesHandler(files) {
-  files = files.filter(it => it.local && it.remote);
+  files = files.filter((it) => it.local && it.remote);
   if (files.length === 0) return;
 
   return ssh.putFiles(files).then(

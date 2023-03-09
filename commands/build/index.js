@@ -9,7 +9,12 @@ const webpackDefaultOption = require("./webpack.config");
 const { merge } = require("webpack-merge");
 const set = require("lodash/set");
 const axios = require("axios");
-
+/**
+ * ----------------------------------------
+ * yy build
+ * yy build logs
+ * ----------------------------------------
+ */
 module.exports = async ctx => {
   print(`yy-cli version: ${package.version}`);
   const { cwd, loadFile, env = "hot" } = ctx;
