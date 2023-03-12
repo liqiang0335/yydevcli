@@ -3,12 +3,14 @@ const fs = require("fs");
 const cwd = process.cwd();
 let _current = cwd;
 
-module.exports = ctx => main(ctx);
-
 /**
- * create file base on json file
- * ynw createfile source="summary.json"
+ * ----------------------------------------
+ * @description create file base on json file
+ * yy createfile source="summary.json"
+ * ----------------------------------------
  */
+module.exports = (ctx) => main(ctx);
+
 function main(ctx) {
   const { source } = ctx;
   let filePath = path.join(cwd, source);

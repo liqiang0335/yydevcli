@@ -4,10 +4,12 @@ const path = require("path");
 const { NodeSSH } = require("node-ssh");
 const ssh = new NodeSSH();
 const USER_HOME = process.env.HOME || process.env.USERPROFILE;
+let _option = {};
 /**
  * ----------------------------------------
  * yy upload
  * yy upload init
+ * yy upload=config
  * ----------------------------------------
  */
 module.exports = async (ctx) => {
@@ -39,6 +41,7 @@ module.exports = async (ctx) => {
           JSON.stringify({
             defaults: {
               serve: "defaults",
+              inMinute: 0,
               folder: { local: "", remote: "" },
               files: [{ local: "", remote: "" }],
               shell: { cwd: "/root", exec: "ls -l" },
@@ -58,19 +61,21 @@ module.exports = async (ctx) => {
 
   const upOption = require(upFilePath);
   const optionKey = ctx.upload === "true" ? "defaults" : ctx.upload;
-  console.log("使用上传配置", optionKey);
+  console.log("使用上传配置".green, optionKey);
   if (!upOption[optionKey]) {
-    return console.log("读取上传配置失败", optionKey);
+    return console.log("读取上传配置失败".red, optionKey);
   }
-  const { files, folder, shell, serve } = upOption[optionKey];
+  const useOption = upOption[optionKey];
+  const { files, folder, shell, serve } = useOption;
+  _option = useOption;
 
-  // 读取配置文件名称
+  // read serve config
   let serveKey = serve || "defaults";
-  console.log("使用服务器配置", serveKey);
+  console.log("serve config".green, serveKey);
 
   const serveOption = require(serveFilePath)[serveKey];
   if (!serveOption) {
-    return console.log("读取服务器配置失败", serveFilePath);
+    return console.log("读取服务器配置失败".red, serveFilePath);
   }
 
   console.log(
@@ -80,12 +85,12 @@ module.exports = async (ctx) => {
 
   try {
     await ssh.connect(serveOption);
-    console.log("连接成功");
+    console.log("连接成功".green);
     if (ctx.test) {
       process.exit();
     }
   } catch (err) {
-    console.log("连接失败,请检查配置文件", serveFilePath);
+    console.log("连接失败,请检查配置文件".red, serveFilePath);
     return;
   }
 
@@ -119,18 +124,12 @@ async function putDirectoryHandler({ local, remote }) {
     .putDirectory(local, remote, {
       recursive: true,
       concurrency: 10,
-      validate: function (itemPath) {
-        const baseName = path.basename(itemPath);
-        return (
-          baseName.substring(0, 1) !== "." && // 不上传文件夹下的隐藏文件
-          baseName !== "node_modules" // 不上传文件夹 node_modules
-        );
-      },
-      tick: function (file, remotePath, error) {
+      validate,
+      tick(file, remotePath, error) {
         const fileName = path.basename(file);
-        console.log("upload...", fileName);
+        console.log("Upload...".green, fileName);
         if (error) {
-          console.log("❌ Error", fileName);
+          console.log("Error".red, fileName);
           failed.push(fileName);
         } else {
           successful.push(fileName);
@@ -140,10 +139,10 @@ async function putDirectoryHandler({ local, remote }) {
     .then(function (status) {
       console.log("--------");
       if (failed.length > 0) {
-        console.log("❌ 上传失败:".red, failed.length);
+        console.log("上传失败:".red, failed.length);
       }
       if (successful.length > 0) {
-        console.log("✅ 上传成功:".green, successful.length);
+        console.log("上传成功:".green, successful.length);
       }
     });
 }
@@ -154,10 +153,10 @@ function putFilesHandler(files) {
 
   return ssh.putFiles(files).then(
     function () {
-      console.log("✅ 上传成功");
+      console.log("上传成功".green);
     },
     function (error) {
-      console.log("❌ 上传失败");
+      console.log("上传失败".red);
       console.log(error);
     }
   );
@@ -166,8 +165,8 @@ function putFilesHandler(files) {
 async function runCommand(shell) {
   const _cwd = shell.cwd;
   const _command = shell.exec;
-  console.log("🔺 执行命令".green, `cd ${_cwd}`.green);
-  console.log("🔺 执行命令".green, `${_command}`.green);
+  console.log("执行命令".green, `cd ${_cwd}`.green);
+  console.log("执行命令".green, `${_command}`.green);
   await ssh.execCommand(_command, { cwd: _cwd }).then(function (result) {
     if (result.stdout) {
       console.log(result.stdout);
@@ -176,4 +175,30 @@ async function runCommand(shell) {
       console.log(result.stderr);
     }
   });
+}
+
+function validate(itemPath) {
+  const baseName = path.basename(itemPath);
+  const a = baseName.substring(0, 1) === ".";
+  const b = baseName === "node_modules";
+
+  if (a || b) {
+    console.log("NOT:".yellow, baseName);
+    return false;
+  }
+
+  // only upload in Minute
+  const inMinute = _option.inMinute;
+  if (typeof inMinute === "number" && inMinute > 0) {
+    const now = Date.now();
+    const { mtimeMs } = _fs.statSync(itemPath);
+    const offset = now - mtimeMs;
+    const isUpdate = offset < 1000 * 60 * inMinute;
+    if (!isUpdate) {
+      console.log("JUMP:".yellow, baseName);
+      return false;
+    }
+  }
+
+  return true;
 }
