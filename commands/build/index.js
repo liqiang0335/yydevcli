@@ -15,7 +15,7 @@ const axios = require("axios");
  * yy build logs
  * ----------------------------------------
  */
-module.exports = async ctx => {
+module.exports = async (ctx) => {
   print(`yy-cli version: ${package.version}`);
   const { cwd, loadFile, env = "hot" } = ctx;
   const yyconfig = loadFile("yy.config.js") || {};
@@ -28,7 +28,8 @@ module.exports = async ctx => {
   ctx.isHot = env === "hot";
   ctx.isDev = env === "dev";
   ctx.isPro = env === "pro";
-  ctx.isNode = userOption.target == "node" || userOption.target == "electron-main";
+  ctx.isNode =
+    userOption.target == "node" || userOption.target == "electron-main";
 
   print("babel-loader.options: ", `${ctx.framework}`.blue);
 
@@ -60,7 +61,10 @@ module.exports = async ctx => {
     },
     pro() {
       if (ctx.watch === "true") {
-        compiler.watch({ aggregateTimeout: 300, poll: undefined }, errorHandler);
+        compiler.watch(
+          { aggregateTimeout: 300, poll: undefined },
+          errorHandler
+        );
       } else {
         compiler.run();
       }
@@ -128,7 +132,11 @@ function getWebpackUserOption(yyconfig, ctx) {
   // merge common-pages setup
   const { common: commonOption, pages } = yyconfig;
   const pageOption = pages[ctx.build] || {};
-  const option = deepmerge.all([commonOption, pageOption, { entry: ctx.entry }]);
+  const option = deepmerge.all([
+    commonOption,
+    pageOption,
+    { entry: ctx.entry },
+  ]);
   const buildFilePath = path.join(ctx.cwd, option.entry);
   const buildFolder = path.dirname(buildFilePath);
 
@@ -140,7 +148,9 @@ function getWebpackUserOption(yyconfig, ctx) {
   if (option["@template"] !== false) {
     const templateFilePath = path.join(buildFolder, "template.html");
     if (!fs.existsSync(templateFilePath)) {
-      const source = fs.readFileSync(path.join(__dirname, "../../assets/template.html"));
+      const source = fs.readFileSync(
+        path.join(__dirname, "../../assets/template.html")
+      );
       fs.writeFileSync(templateFilePath, source);
       print("添加模版:template.html");
     }
