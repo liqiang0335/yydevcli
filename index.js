@@ -43,21 +43,36 @@ function getInputCommand() {
 }
 
 function getCommands(folder) {
-  return folder.filter(it => !it.startsWith(".")).map(it => it.replace(/\.[a-z]+$/, ""));
+  return folder.filter((it) => !it.startsWith(".")).map((it) => it.replace(/\.[a-z]+$/, ""));
 }
 
+// 获取命令行参数
 function getParams(arr) {
   const reg = /=|--/i;
+
   const result = arr
     .filter((_, i) => i > 1)
     .reduce((acc, cur) => {
       if (!reg.test(cur)) {
         cur = `${cur}=true`;
       }
+
       cur = cur.replace(/--([^\s]+)/, "$1=true");
+
       const [key, value] = cur.split("=");
-      acc[key] = value;
+
+      const v = value === "true" ? true : value;
+
+      // 如果是路径, 则放入paths数组
+      if (/\//.test(key)) {
+        acc.paths = acc.paths || [];
+        acc.paths.push(key);
+      } else {
+        acc[key] = v;
+      }
+
       return acc;
     }, {});
+
   return result;
 }

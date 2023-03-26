@@ -60,7 +60,7 @@ module.exports = async (ctx) => {
   }
 
   const upOption = require(upFilePath);
-  const optionKey = ctx.upload === "true" ? "defaults" : ctx.upload;
+  const optionKey = ctx.upload === true ? "defaults" : ctx.upload;
   console.log("使用上传配置".green, optionKey);
   if (!upOption[optionKey]) {
     return console.log("读取上传配置失败".red, optionKey);
@@ -78,10 +78,7 @@ module.exports = async (ctx) => {
     return console.log("读取服务器配置失败".red, serveFilePath);
   }
 
-  console.log(
-    "正在连接",
-    `${serveOption.username}@${serveOption.host}:${serveOption.port || 22}`
-  );
+  console.log("正在连接", `${serveOption.username}@${serveOption.host}:${serveOption.port || 22}`);
 
   try {
     await ssh.connect(serveOption);
