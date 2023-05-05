@@ -96,11 +96,7 @@ module.exports = function (userOption, ctx) {
         sassRule,
         {
           test: /\.less$/i,
-          use: [
-            cssloader,
-            "css-loader",
-            { loader: "less-loader", options: { lessOptions: { javascriptEnabled: true, modifyVars: themeVars } } },
-          ],
+          use: [cssloader, "css-loader", { loader: "less-loader", options: { lessOptions: { javascriptEnabled: true, modifyVars: themeVars } } }],
         },
         { test: /\.(png|svg|jpe?g|gif)$/i, type: "asset/resource" },
         { test: /\.(woff|woff2|eot|ttf|otf|docx?|xlsx?)$/i, type: "asset/resource" },
@@ -150,7 +146,7 @@ function shouldOpimization(ctx) {
   const op = {
     minimize: true,
     minimizer: [
-      compiler => {
+      (compiler) => {
         const TerserPlugin = require("terser-webpack-plugin");
         new TerserPlugin({
           terserOptions: { format: { comments: false } },
@@ -162,7 +158,7 @@ function shouldOpimization(ctx) {
   if (!ctx.isNode) {
     // op.runtimeChunk = "single";
     // op.splitChunks = { chunks: "all" };
-    op.minimizer.push(compiler => {
+    op.minimizer.push((compiler) => {
       new CssMinimizerPlugin().apply(compiler);
     });
   }
@@ -178,19 +174,19 @@ function getPlugins(ctx, share) {
   const { hashHolder, HtmlWebpackPluginOption, fileName, saveFolder } = share;
   const plugins = [];
 
-  plugins.push(compiler => {
+  plugins.push((compiler) => {
     const WebpackBar = require("webpackbar");
     new WebpackBar().apply(compiler);
   });
 
   if (!ctx.isNode) {
-    plugins.push(compiler => {
+    plugins.push((compiler) => {
       new MiniCssExtractPlugin({
         filename: saveFolder + `${fileName}.${hashHolder}.css`,
       }).apply(compiler);
     });
 
-    plugins.push(compiler => {
+    plugins.push((compiler) => {
       const Option = require("html-webpack-plugin");
       const templatePath = HtmlWebpackPluginOption.template || "template.html";
 

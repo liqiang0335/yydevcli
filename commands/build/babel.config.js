@@ -29,7 +29,11 @@ module.exports = function BabelOption({ browsers }) {
     },
     react: {
       presets: [BabelEnv, ["@babel/preset-react", { runtime: "automatic" }]],
-      plugins: [...CommonPlugins, ["import", { libraryName: "antd", libraryDirectory: "es", style: true }]],
+      plugins: [
+        ...CommonPlugins,
+        // antd 5 不再需要 import 插件
+        // ["import", { libraryName: "antd", libraryDirectory: "es", style: true }]
+      ],
     },
   };
 };
