@@ -5,14 +5,12 @@ const arg = process.argv;
 const random = require("crypto-random-string");
 /**
  * ----------------------------------------
- * 重命名
  * yy rename myname random pad=3
  * ----------------------------------------
  */
 function main(ctx) {
-  console.log("🍎  ctx", ctx);
   const prefix = arg[arg.length - 1];
-  const files = fs.readdirSync(cwd).filter(it => /(jpe?g|png|gif)$/i.test(it));
+  const files = fs.readdirSync(cwd).filter((it) => /(jpe?g|png|gif)$/i.test(it));
   files.forEach((item, i) => {
     const oldName = path.join(cwd, item);
     const ext = path.extname(oldName);
@@ -28,6 +26,6 @@ function main(ctx) {
   });
 }
 
-module.exports = ctx => {
+module.exports = (ctx) => {
   main(ctx);
 };
