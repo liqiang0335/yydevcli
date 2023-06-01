@@ -83,6 +83,9 @@ module.exports = function (userOption, ctx) {
       maxEntrypointSize: 512000,
       maxAssetSize: 512000,
     },
+    stats: {
+      warningsFilter: /HMR|webpack-dev-server/,
+    },
     resolve: { extensions: [".js", ".jsx", ".vue"] },
     module: {
       rules: [
