@@ -17,7 +17,7 @@ module.exports = function BabelOption({ browsers }) {
     "@babel/plugin-proposal-nullish-coalescing-operator",
   ];
 
-  return {
+  const ret = {
     common: { presets: [BabelEnv] },
     vue: {
       presets: [BabelEnv],
@@ -36,4 +36,6 @@ module.exports = function BabelOption({ browsers }) {
       ],
     },
   };
+
+  return ret;
 };
