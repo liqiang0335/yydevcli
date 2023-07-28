@@ -196,7 +196,7 @@ function getPlugins(ctx, share) {
       const ops = {
         ...HtmlWebpackPluginOption,
         publicPath: "auto",
-        template: /^\//.test(HtmlWebpackPluginOption.template)
+        template: /^[/\\]/.test(HtmlWebpackPluginOption.template)
           ? HtmlWebpackPluginOption.template // 如果匹配到全局模版路径,则直接使用
           : path.join(ctx.buildFolder, templatePath),
       };
