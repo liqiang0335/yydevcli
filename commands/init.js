@@ -1,15 +1,16 @@
 const fs = require("fs");
 const path = require("path");
-const recursive = require("recursive-readdir");
+const { readdir } = require("../utils/readdirs");
 const { select, confirm } = require("@inquirer/prompts");
-const sourcedir = path.join(__dirname, "../assets");
-const dirFromSource = (name) => path.join(sourcedir, name);
+const sourcedir = "/Users/liqiang/Documents/repos/liqiang/templates";
 const copyFile = require("../utils/copyFile");
+
+const dirFromSource = (name) => path.join(sourcedir, name);
 
 module.exports = async (ctx) => {
   const { cwd, print } = ctx;
 
-  const ok = await confirm({ message: "是否初始化项目: " + cwd, default: true });
+  const ok = await confirm({ message: "是否初始化到: " + cwd, default: true });
   if (!ok) return;
 
   const answer = await select({
@@ -20,12 +21,11 @@ module.exports = async (ctx) => {
       { name: "Electron", value: "Electron" },
       { name: "Express", value: "Express" },
       { name: "Nest", value: "Nest" },
-      { name: "SpringBoot", value: "SpringBoot" },
     ],
   });
 
   const sourceDir = dirFromSource(answer);
-  const files = await recursive(sourceDir);
+  const files = readdir(sourceDir);
 
   files.forEach((sourceFilePath) => {
     const basename = path.basename(sourceFilePath);

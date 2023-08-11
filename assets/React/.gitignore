@@ -1,8 +1,0 @@
-.DS_Store
-node_modules
-dist
-build
-.vscode/sftp.json
-*.log
-**/*.min.js
-**/*.min.css

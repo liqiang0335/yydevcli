@@ -7,3 +7,4 @@ _build
 commands/build/.temp_cache/
 temp/
 demos/
+test/
