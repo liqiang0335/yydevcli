@@ -9,7 +9,6 @@ const dirFromSource = (name) => path.join(sourcedir, name);
 
 module.exports = async (ctx) => {
   const { cwd, print } = ctx;
-
   const ok = await confirm({ message: "是否初始化到: " + cwd, default: true });
   if (!ok) return;
 
@@ -25,18 +24,18 @@ module.exports = async (ctx) => {
   });
 
   const sourceDir = dirFromSource(answer);
-  const files = readdir(sourceDir);
+  const items = readdir(sourceDir);
 
-  files.forEach((sourceFilePath) => {
-    const basename = path.basename(sourceFilePath);
-    const relative = path.relative(sourceDir, sourceFilePath);
+  items.forEach((item) => {
+    const { fileName, filePath } = item;
+    const relative = path.relative(sourceDir, filePath);
     const targetFilePath = path.join(cwd, relative);
 
     if (fs.existsSync(targetFilePath)) {
-      print("[ignore]".yellow, `${basename}`);
+      print("[ignore]".yellow, `${fileName}`);
     } else {
-      print("[add]".green, basename);
-      copyFile(sourceFilePath, targetFilePath);
+      print("[add]".green, fileName);
+      copyFile(filePath, targetFilePath);
     }
   });
 };

@@ -41,7 +41,7 @@ function readdir(root = process.cwd(), all = []) {
     if (isDir) {
       readdir(fpath, all);
     } else {
-      const data = { fielPath: fpath, fileName, id, pid, extName };
+      const data = { filePath: fpath, fileName, id, pid, extName };
       all.push(data);
     }
   }
@@ -57,7 +57,6 @@ function readdir(root = process.cwd(), all = []) {
 function readTree(root = process.cwd(), all = []) {
   const files = fs.readdirSync(root);
   for (let fileName of files) {
-    // 判断是否应该忽略文件
     if (ignores.includes(fileName)) {
       console.log("ignore:", fileName);
       continue;
