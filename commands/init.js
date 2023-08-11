@@ -2,10 +2,10 @@ const fs = require("fs");
 const path = require("path");
 const { readdir } = require("../utils/readdirs");
 const { select, confirm } = require("@inquirer/prompts");
-const sourcedir = "/Users/liqiang/Documents/repos/liqiang/templates";
 const copyFile = require("../utils/copyFile");
 
-const dirFromSource = (name) => path.join(sourcedir, name);
+const SOURCEDIR = "/Users/liqiang/Documents/repos/liqiang/templates";
+const dirFromSource = (name) => path.join(SOURCEDIR, name);
 
 module.exports = async (ctx) => {
   const { cwd, print } = ctx;
@@ -23,12 +23,12 @@ module.exports = async (ctx) => {
     ],
   });
 
-  const sourceDir = dirFromSource(answer);
-  const items = readdir(sourceDir);
+  const SOURCE_DIR = dirFromSource(answer);
+  const items = readdir(SOURCE_DIR);
 
   items.forEach((item) => {
     const { fileName, filePath } = item;
-    const relative = path.relative(sourceDir, filePath);
+    const relative = path.relative(SOURCE_DIR, filePath);
     const targetFilePath = path.join(cwd, relative);
 
     if (fs.existsSync(targetFilePath)) {
