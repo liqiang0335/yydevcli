@@ -28,7 +28,7 @@ module.exports = async (ctx) => {
   ctx.isHot = env === "hot";
   ctx.isDev = env === "dev";
   ctx.isPro = env === "pro";
-  ctx.isNode = userOption.target == "node" || userOption.target == "electron-main";
+  ctx.isNode = userOption.target == "node";
 
   print("babel-loader.options: ", `${ctx.framework}`.blue);
 

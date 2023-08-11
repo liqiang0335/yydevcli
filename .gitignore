@@ -6,4 +6,4 @@ test.js
 _build
 commands/build/.temp_cache/
 temp/
-
+demos/

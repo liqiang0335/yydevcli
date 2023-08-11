@@ -4,13 +4,13 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "baseUrl": ".",
+    "baseUrl": "",
     "paths": {
-      "@store/*": ["./main/store/*"],
-      "@comps/*": ["./main/component/*"],
-      "@script/*": ["./main/script/*"],
-      "@const/*": ["./main/constant/*"],
-      "@hook/*": ["./main/hook/*"]
+      "@store/*": ["main/store/*"],
+      "@comps/*": ["main/component/*"],
+      "@script/*": ["main/script/*"],
+      "@const/*": ["main/constant/*"],
+      "@hook/*": ["main/hook/*"]
     }
   },
   "exclude": ["dist", "node_modules"]
