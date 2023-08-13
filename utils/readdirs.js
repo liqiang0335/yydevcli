@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const md5 = require("md5");
 
-const ignores = [".DS_Store", ".git", "node_modules", "dist", "build"];
+const ignores = [".DS_Store", ".git", ".pnpm", "node_modules", "dist", "build", "release"];
 
 module.exports = { readdir, readTree, addIgnore };
 
