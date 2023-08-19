@@ -5,7 +5,8 @@ const print = require("../../utils/print");
  *  BabelOption
  * ----------------------------------------
  */
-module.exports = function BabelOption({ browsers }) {
+module.exports = function BabelOption(ctx) {
+  const { browsers, antd } = ctx;
   print("browsers", browsers);
   const BabelEnv = ["@babel/env", { modules: "auto", targets: { browsers }, useBuiltIns: "usage", corejs: "3" }];
 
@@ -29,13 +30,14 @@ module.exports = function BabelOption({ browsers }) {
     },
     react: {
       presets: [BabelEnv, ["@babel/preset-react", { runtime: "automatic" }]],
-      plugins: [
-        ...CommonPlugins,
-        // antd 5 不再需要 import 插件
-        // ["import", { libraryName: "antd", libraryDirectory: "es", style: true }]
-      ],
+      plugins: [...CommonPlugins],
     },
   };
+
+  if (antd === "4") {
+    console.log("antd 4: add import plugin");
+    ret.react.plugins.push(["import", { libraryName: "antd", libraryDirectory: "es", style: true }]);
+  }
 
   return ret;
 };

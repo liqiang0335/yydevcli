@@ -17,6 +17,7 @@ module.exports = function (userOption, ctx) {
   const cssInline = userOption["@cssInline"];
   let hash = userOption["@hash"];
   const cssModules = userOption["@cssModules"];
+  const antd = userOption["@antd"];
   const fileName = userOption["@fileName"] || ctx.build;
   const themeVars = userOption["@themeVars"] || {};
   const HtmlWebpackPluginOption = userOption["@HtmlWebpackPluginOption"] || {};
@@ -44,7 +45,7 @@ module.exports = function (userOption, ctx) {
     browsers,
   };
 
-  const babelOps = babelOptions({ browsers })[framework];
+  const babelOps = babelOptions({ browsers, antd })[framework];
   const sassRule = createScssRules(share);
 
   // 检测SCSS全局变量

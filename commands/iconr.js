@@ -2,6 +2,10 @@ const clip = require("copy-paste");
 const fs = require("fs/promises");
 const path = require("path");
 
+/***
+ * 创建SVG组件:内容从剪贴板获取
+ * yy iconr [iconname]
+ */
 async function main(ctx) {
   const { cwd } = ctx;
   const name = "SVG" + process.argv[3];
