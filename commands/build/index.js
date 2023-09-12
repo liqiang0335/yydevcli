@@ -17,6 +17,7 @@ const axios = require("axios");
  */
 module.exports = async (ctx) => {
   print(`yy-cli version: ${package.version}`);
+  print(`yy-cli dirname: ${__dirname}`);
   const { cwd, loadFile, env = "hot" } = ctx;
   const yyconfig = loadFile("yy.config.js") || {};
   const userOption = getWebpackUserOption(yyconfig, ctx);

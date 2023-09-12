@@ -15,6 +15,7 @@ module.exports = function (userOption, ctx) {
 
   const browsers = userOption["@browsers"] || ["chrome >= 60"];
   const cssInline = userOption["@cssInline"];
+  const useTemplate = userOption["@template"] === undefined ? true : false;
   let hash = userOption["@hash"];
   const cssModules = userOption["@cssModules"];
   const antd = userOption["@antd"];
@@ -32,6 +33,7 @@ module.exports = function (userOption, ctx) {
   const cssloader = cssInline ? "style-loader" : MiniCssExtractPlugin.loader;
 
   const share = {
+    useTemplate,
     saveFolder,
     pack,
     HtmlWebpackPluginOption,
@@ -68,7 +70,7 @@ module.exports = function (userOption, ctx) {
       clean: true,
       assetModuleFilename: "assets/[hash][ext]",
     },
-    plugins: getPlugins(ctx, share),
+    plugins: getPlugins(ctx, share), // 加载插件
     node: ctx.isNode ? { __dirname: false, __filename: false } : {},
     externals: ctx.isNode ? [nodeExternals()] : [], // node 环境排除所有 node_modules 依赖
     devServer: {
@@ -190,26 +192,28 @@ function getPlugins(ctx, share) {
       }).apply(compiler);
     });
 
-    plugins.push((compiler) => {
-      const Option = require("html-webpack-plugin");
-      const templatePath = HtmlWebpackPluginOption.template || "template.html";
+    if (share.useTemplate === false) {
+      plugins.push((compiler) => {
+        const Option = require("html-webpack-plugin");
+        const templatePath = HtmlWebpackPluginOption.template || "template.html";
 
-      const ops = {
-        ...HtmlWebpackPluginOption,
-        publicPath: "auto",
-        template: /^[/\\]/.test(HtmlWebpackPluginOption.template)
-          ? HtmlWebpackPluginOption.template // 如果匹配到全局模版路径,则直接使用
-          : path.join(ctx.buildFolder, templatePath),
-      };
+        const ops = {
+          ...HtmlWebpackPluginOption,
+          publicPath: "auto",
+          template: /^[/\\]/.test(HtmlWebpackPluginOption.template)
+            ? HtmlWebpackPluginOption.template // 如果匹配到全局模版路径,则直接使用
+            : path.join(ctx.buildFolder, templatePath),
+        };
 
-      if (HtmlWebpackPluginOption.publicPath) {
-        if (!ctx.isHot) {
-          ops.publicPath = HtmlWebpackPluginOption.publicPath;
+        if (HtmlWebpackPluginOption.publicPath) {
+          if (!ctx.isHot) {
+            ops.publicPath = HtmlWebpackPluginOption.publicPath;
+          }
         }
-      }
 
-      new Option(ops).apply(compiler);
-    });
+        new Option(ops).apply(compiler);
+      });
+    }
   }
 
   return plugins;
