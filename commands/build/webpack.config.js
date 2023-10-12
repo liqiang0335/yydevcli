@@ -15,7 +15,6 @@ module.exports = function (userOption, ctx) {
 
   const browsers = userOption["@browsers"] || ["chrome >= 60"];
   const cssInline = userOption["@cssInline"];
-  const useTemplate = userOption["@template"] === undefined ? true : false;
   let hash = userOption["@hash"];
   const cssModules = userOption["@cssModules"];
   const antd = userOption["@antd"];
@@ -33,7 +32,6 @@ module.exports = function (userOption, ctx) {
   const cssloader = cssInline ? "style-loader" : MiniCssExtractPlugin.loader;
 
   const share = {
-    useTemplate,
     saveFolder,
     pack,
     HtmlWebpackPluginOption,
@@ -192,28 +190,37 @@ function getPlugins(ctx, share) {
       }).apply(compiler);
     });
 
-    if (share.useTemplate === false) {
-      plugins.push((compiler) => {
-        const Option = require("html-webpack-plugin");
-        const templatePath = HtmlWebpackPluginOption.template || "template.html";
+    plugins.push((compiler) => {
+      const Option = require("html-webpack-plugin");
+      const templatePath = HtmlWebpackPluginOption.template || "template.html";
+      const ops = {
+        ...HtmlWebpackPluginOption,
+        publicPath: "auto",
+        template: path.join(ctx.buildFolder, templatePath),
+      };
 
-        const ops = {
-          ...HtmlWebpackPluginOption,
-          publicPath: "auto",
-          template: /^[/\\]/.test(HtmlWebpackPluginOption.template)
-            ? HtmlWebpackPluginOption.template // 如果匹配到全局模版路径,则直接使用
-            : path.join(ctx.buildFolder, templatePath),
-        };
+      // 如果匹配到全局模版路径,则直接使用
+      const isAbsolute = /^[/\\]/.test(templatePath);
+      if (isAbsolute) {
+        ops.template = HtmlWebpackPluginOption.template;
+      }
 
-        if (HtmlWebpackPluginOption.publicPath) {
-          if (!ctx.isHot) {
-            ops.publicPath = HtmlWebpackPluginOption.publicPath;
-          }
+      // 如果存在开发模版,则使用开发模版
+      const devTemplate = path.join(ctx.buildFolder, "template-dev.html");
+      if (fs.existsSync(devTemplate)) {
+        ops.template = devTemplate;
+      }
+
+      // 如果是生产环境,则使用publicPath
+      // 热更新模式,使用auto
+      if (HtmlWebpackPluginOption.publicPath) {
+        if (!ctx.isHot) {
+          ops.publicPath = HtmlWebpackPluginOption.publicPath;
         }
+      }
 
-        new Option(ops).apply(compiler);
-      });
-    }
+      new Option(ops).apply(compiler);
+    });
   }
 
   return plugins;
