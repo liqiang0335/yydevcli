@@ -205,10 +205,12 @@ function getPlugins(ctx, share) {
         ops.template = HtmlWebpackPluginOption.template;
       }
 
-      // 如果存在开发模版,则使用开发模版
-      const devTemplate = path.join(ctx.buildFolder, "template-dev.html");
-      if (fs.existsSync(devTemplate)) {
-        ops.template = devTemplate;
+      // 如果是开发模式: 如果存在开发模版, 则使用开发模版
+      if (ctx.isHot) {
+        const devTemplate = path.join(ctx.buildFolder, "template-dev.html");
+        if (fs.existsSync(devTemplate)) {
+          ops.template = devTemplate;
+        }
       }
 
       // 如果是生产环境,则使用publicPath
