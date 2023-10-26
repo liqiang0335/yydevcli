@@ -137,7 +137,7 @@ function getWebpackUserOption(yyconfig, ctx) {
     throw new Error(`请配置 'entry' 参数`);
   }
 
-  // create template.html
+  // 创建HTML模版
   if (option["@template"] !== false) {
     const templateFilePath = path.join(buildFolder, "template.html");
     if (!fs.existsSync(templateFilePath)) {
