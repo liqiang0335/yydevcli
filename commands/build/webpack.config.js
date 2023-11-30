@@ -13,7 +13,7 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 module.exports = function (userOption, ctx) {
   const pack = require(process.cwd() + "/package.json");
 
-  const browsers = userOption["@browsers"] || ["chrome >= 60"];
+  const browsers = userOption["@browsers"] || ["chrome >= 70"];
   const cssInline = userOption["@cssInline"];
   let hash = userOption["@hash"];
   const cssModules = userOption["@cssModules"];
@@ -90,9 +90,14 @@ module.exports = function (userOption, ctx) {
     stats: {
       warningsFilter: /HMR|webpack-dev-server/,
     },
-    resolve: { extensions: [".js", ".jsx", ".vue"] },
+    resolve: { extensions: [".js", ".jsx", ".ts", ".tsx", ".vue"] },
     module: {
       rules: [
+        {
+          test: /\.ts$/,
+          exclude: /node_modules/,
+          use: [{ loader: "ts-loader" }],
+        },
         {
           test: /\.(js|jsx)$/,
           use: [{ loader: "babel-loader", options: babelOps }],
