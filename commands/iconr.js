@@ -31,7 +31,7 @@ async function main(ctx) {
     );
   }`;
 
-  const savePath = path.join(cwd, `${name}.js`);
+  const savePath = path.join(cwd, `${name}.tsx`);
   await fs.writeFile(savePath, target);
 
   console.log(`OK: ${savePath}`);
