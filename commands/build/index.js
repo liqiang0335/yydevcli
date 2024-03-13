@@ -69,7 +69,7 @@ module.exports = async (ctx) => {
     async hot() {
       const server = new WebpackDevServer(option.devServer, compiler);
       await server.start();
-    },
+    }
   };
 
   if (envHandler[ctx.env]) {
@@ -84,6 +84,7 @@ module.exports = async (ctx) => {
  */
 function checkframework(buildFilePath) {
   const filePath = buildFilePath + ".js";
+  console.log("⭕️ filePath: ", filePath);
   let content;
   try {
     content = fs.readFileSync(filePath, "utf-8");
@@ -114,7 +115,7 @@ function errorHandler(err, stats) {
       chunkModules: false,
       chunks: false,
       children: false,
-      maxModules: 1,
+      maxModules: 1
     });
     console.log(buildInfo);
   }
