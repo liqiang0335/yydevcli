@@ -29,6 +29,9 @@ dependencies:
   deepmerge:
     specifier: ^4.2.2
     version: 4.2.2
+  dotenv:
+    specifier: ^16.4.5
+    version: 16.4.5
   html-webpack-plugin:
     specifier: ^5.5.0
     version: 5.5.0(acorn@8.8.2)(webpack@5.75.0)
@@ -1282,6 +1285,11 @@ packages:
     dependencies:
       no-case: 3.0.4
       tslib: 2.3.1
+    dev: false
+
+  /dotenv@16.4.5:
+    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
+    engines: {node: '>=12'}
     dev: false
 
   /ee-first@1.1.1:

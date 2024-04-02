@@ -3,6 +3,11 @@
 console.log("-----------------------------");
 const fs = require("fs");
 const path = require("path");
+console.log(process.cwd());
+
+const dotenv = require("dotenv");
+dotenv.config({ path: [".env.local", ".env"] });
+
 require("./utils/enhanceJoin");
 require("colors");
 const loadFile = require("./utils/loadFile");
@@ -25,7 +30,7 @@ function main() {
       cwd, // 当前工作区
       loadFile, // 获取工作区文件路径
       log, // 打印
-      print, // 打印
+      print // 打印
     };
     const ctx = Object.assign(share, argv);
     require(`./commands/${exec}`)(ctx);

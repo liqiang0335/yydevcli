@@ -8,3 +8,4 @@ commands/build/.temp_cache/
 temp/
 demos/
 test/
+.env.local
