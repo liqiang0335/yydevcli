@@ -161,7 +161,7 @@ function shouldOpimization(ctx) {
       (compiler) => {
         const TerserPlugin = require("terser-webpack-plugin");
         new TerserPlugin({
-          terserOptions: { format: { comments: false }, compress: { drop_console: true } },
+          terserOptions: { format: { comments: false }, compress: { drop_console: false } },
           extractComments: false
         }).apply(compiler);
       }
