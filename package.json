@@ -20,6 +20,7 @@
     "crypto-random-string": "3.2.0",
     "css-minimizer-webpack-plugin": "^4.2.2",
     "deepmerge": "^4.2.2",
+    "dotenv": "^16.4.5",
     "html-webpack-plugin": "^5.5.0",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",

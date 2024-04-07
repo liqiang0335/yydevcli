@@ -4,11 +4,18 @@ const { readdir } = require("../utils/readdirs");
 const { select, confirm } = require("@inquirer/prompts");
 const copyFile = require("../utils/copyFile");
 
-const SOURCEDIR = "/Users/liqiang/Documents/repos/liqiang/templates";
-const dirFromSource = (name) => path.join(SOURCEDIR, name);
-const configPath = path.join(SOURCEDIR, "_config.js");
-
 module.exports = async (ctx) => {
+  let SOURCEDIR = process.env.DirTemplates;
+  if (process.platform === "win32") {
+    SOURCEDIR = "D:\\liqiang\\templates";
+  } else {
+    SOURCEDIR = "/Users/liqiang/Documents/repos/liqiang/templates";
+  }
+
+  console.log("⭕️ SOURCEDIR: ", SOURCEDIR);
+  const dirFromSource = (name) => path.join(SOURCEDIR, name);
+  const configPath = path.join(SOURCEDIR, "_config.js");
+
   const { cwd, print } = ctx;
   const isForce = ctx["-f"];
 
@@ -20,7 +27,7 @@ module.exports = async (ctx) => {
 
   const answer = await select({
     message: "选择模版",
-    choices: choices,
+    choices: choices
   });
 
   const SOURCE_DIR = dirFromSource(answer);
