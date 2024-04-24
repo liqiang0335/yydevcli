@@ -5,6 +5,7 @@ const babelOptions = require("./babel.config");
 const print = require("../../utils/print");
 const nodeExternals = require("webpack-node-externals");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 /**
  * ----------------------------------------
  * WEBPACK CONFIG
@@ -42,7 +43,7 @@ module.exports = function (userOption, ctx) {
     cssModules,
     hash,
     cssInline,
-    browsers
+    browsers,
   };
 
   const babelOps = babelOptions({ browsers, antd })[framework];
@@ -54,7 +55,7 @@ module.exports = function (userOption, ctx) {
     print("加载全局变量: style/var.scss");
     sassRule.use.push({
       loader: "sass-resources-loader",
-      options: { resources: sassVar }
+      options: { resources: sassVar },
     });
   }
 
@@ -66,7 +67,7 @@ module.exports = function (userOption, ctx) {
       filename: saveFolder + `${fileName}.${hashHolder}.js`,
       path: outputPath,
       clean: true,
-      assetModuleFilename: "assets/[hash][ext]"
+      assetModuleFilename: "assets/[hash][ext]",
     },
     plugins: getPlugins(ctx, share), // 加载插件
     node: ctx.isNode ? { __dirname: false, __filename: false } : {},
@@ -78,17 +79,17 @@ module.exports = function (userOption, ctx) {
       port: 10000,
       open: true,
       client: {
-        overlay: false
-      }
+        overlay: false,
+      },
     },
     optimization: shouldOpimization(ctx),
     performance: {
       hints: false,
       maxEntrypointSize: 512000,
-      maxAssetSize: 512000
+      maxAssetSize: 512000,
     },
     stats: {
-      warningsFilter: /HMR|webpack-dev-server/
+      warningsFilter: /HMR|webpack-dev-server/,
     },
     resolve: { extensions: [".js", ".jsx", ".ts", ".tsx", ".vue"] },
     module: {
@@ -96,24 +97,24 @@ module.exports = function (userOption, ctx) {
         {
           test: /\.ts$/,
           exclude: /node_modules/,
-          use: [{ loader: "ts-loader" }]
+          use: [{ loader: "ts-loader" }],
         },
         {
           test: /\.(js|jsx)$/,
           use: [{ loader: "babel-loader", options: babelOps }],
-          exclude: /node_modules/
+          exclude: /node_modules/,
         },
         { test: /ynw.+js$/, use: [{ loader: "babel-loader", options: babelOps }] },
         { test: /\.css$/, use: [cssloader, "css-loader", "postcss-loader"] },
         sassRule,
         {
           test: /\.less$/i,
-          use: [cssloader, "css-loader", { loader: "less-loader", options: { lessOptions: { javascriptEnabled: true, modifyVars: themeVars } } }]
+          use: [cssloader, "css-loader", { loader: "less-loader", options: { lessOptions: { javascriptEnabled: true, modifyVars: themeVars } } }],
         },
         { test: /\.(png|svg|jpe?g|gif)$/i, type: "asset/resource" },
-        { test: /\.(woff|woff2|eot|ttf|otf|docx?|xlsx?)$/i, type: "asset/resource" }
-      ]
-    }
+        { test: /\.(woff|woff2|eot|ttf|otf|docx?|xlsx?)$/i, type: "asset/resource" },
+      ],
+    },
   };
 
   return options;
@@ -143,8 +144,8 @@ function createScssRules(share) {
       cssloader,
       { loader: "css-loader", options: { importLoaders: 2, modules } },
       "postcss-loader",
-      { loader: "sass-loader", options: { implementation: require("sass") } }
-    ]
+      { loader: "sass-loader", options: { implementation: require("sass") } },
+    ],
   };
 }
 
@@ -162,10 +163,10 @@ function shouldOpimization(ctx) {
         const TerserPlugin = require("terser-webpack-plugin");
         new TerserPlugin({
           terserOptions: { format: { comments: false }, compress: { drop_console: false } },
-          extractComments: false
+          extractComments: false,
         }).apply(compiler);
-      }
-    ]
+      },
+    ],
   };
   if (!ctx.isNode) {
     // op.runtimeChunk = "single";
@@ -191,10 +192,16 @@ function getPlugins(ctx, share) {
     new WebpackBar().apply(compiler);
   });
 
+  if (ctx.isPro) {
+    plugins.push((compiler) => {
+      new BundleAnalyzerPlugin({ analyzerMode: "static", openAnalyzer: false }).apply(compiler);
+    });
+  }
+
   if (!ctx.isNode) {
     plugins.push((compiler) => {
       new MiniCssExtractPlugin({
-        filename: saveFolder + `${fileName}.${hashHolder}.css`
+        filename: saveFolder + `${fileName}.${hashHolder}.css`,
       }).apply(compiler);
     });
 
@@ -204,7 +211,7 @@ function getPlugins(ctx, share) {
       const ops = {
         ...HtmlWebpackPluginOption,
         publicPath: "auto",
-        template: path.join(ctx.buildFolder, templatePath)
+        template: path.join(ctx.buildFolder, templatePath),
       };
 
       // 如果匹配到全局模版路径,则直接使用
