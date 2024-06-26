@@ -193,9 +193,9 @@ function getPlugins(ctx, share) {
   });
 
   if (ctx.isPro) {
-    plugins.push((compiler) => {
-      new BundleAnalyzerPlugin({ analyzerMode: "static", openAnalyzer: false }).apply(compiler);
-    });
+    // plugins.push((compiler) => {
+    //   new BundleAnalyzerPlugin({ analyzerMode: "static", openAnalyzer: false }).apply(compiler);
+    // });
   }
 
   if (!ctx.isNode) {
